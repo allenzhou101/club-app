@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'explore/explore.dart';
+import 'calendar/calendar.dart';
 
 void main() => runApp(MyApp());
 
@@ -14,6 +15,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.deepOrange,
       ),
       home: Home(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -29,7 +31,7 @@ class _HomeState extends State<Home> {
   int _currentIndex = 0;
   final List<Widget> _children = [
     ExplorePage(),
-    PlaceholderWidget(Colors.red),
+    CalendarPage(),
     PlaceholderWidget(Colors.green)
   ];
 
@@ -53,8 +55,8 @@ class _HomeState extends State<Home> {
               title: new Text('Home'),
             ),
             BottomNavigationBarItem(
-              icon: new Icon(Icons.search),
-              title: new Text('Search'),
+              icon: new Icon(Icons.calendar_today),
+              title: new Text('Calendar'),
             ),
             BottomNavigationBarItem(
               icon: new Icon(Icons.person),
