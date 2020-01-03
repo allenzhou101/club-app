@@ -18,7 +18,12 @@ class MyApp extends StatelessWidget {
               )
             ],
           ),
-            body: InnerProfile()
+            body: Padding(
+              padding: EdgeInsets.only(
+                left: 14, right: 14
+              ),
+                child:InnerProfile()
+            )
         )
     );
   }
