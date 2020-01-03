@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'explore/explore.dart';
 import 'calendar/calendar.dart';
+import 'profile/profile.dart';
 
 void main() => runApp(MyApp());
 
@@ -32,7 +33,7 @@ class _HomeState extends State<Home> {
   final List<Widget> _children = [
     ExplorePage(),
     CalendarPage(),
-    PlaceholderWidget(Colors.green)
+    ProfilePage()
   ];
 
   void onTabTapped(int index) {

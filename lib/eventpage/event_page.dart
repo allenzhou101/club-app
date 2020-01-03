@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 //import 'package:cached_network_image/cached_network_image.dart';
 
 //use Hero() Widget
-void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class EventPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
