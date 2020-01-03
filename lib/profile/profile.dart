@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:club_app/main.dart';
 
 class ProfilePage extends StatelessWidget {
   @override

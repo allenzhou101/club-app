@@ -9,7 +9,6 @@ class EventPage extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          primarySwatch: Colors.deepOrange,
         // Use the old theme but apply the following three changes
           textTheme: TextTheme(
             headline: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),

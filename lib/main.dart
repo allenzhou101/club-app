@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'explore/explore.dart';
 import 'calendar/calendar.dart';
 import 'profile/profile.dart';
+import 'package:club_app/search/search.dart';
+import 'package:club_app/eventpage/event_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -13,6 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
+        primaryColor: Colors.deepOrange,
         primarySwatch: Colors.deepOrange,
       ),
       home: Home(),
@@ -32,6 +35,7 @@ class _HomeState extends State<Home> {
   int _currentIndex = 0;
   final List<Widget> _children = [
     ExplorePage(),
+    SearchPage(),
     CalendarPage(),
     ProfilePage()
   ];
@@ -48,12 +52,17 @@ class _HomeState extends State<Home> {
       //appBar: AppBar(title: Text('Explore UT Clubs')),
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
           onTap: onTabTapped,
           currentIndex: _currentIndex,
           items: [
             BottomNavigationBarItem(
               icon: new Icon(Icons.home),
               title: new Text('Home'),
+            ),
+            BottomNavigationBarItem(
+              icon: new Icon(Icons.search),
+              title: new Text('Search'),
             ),
             BottomNavigationBarItem(
               icon: new Icon(Icons.calendar_today),
