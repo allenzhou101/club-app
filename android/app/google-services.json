@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "791446783357",
+    "firebase_url": "https://club-app-81238.firebaseio.com",
+    "project_id": "club-app-81238",
+    "storage_bucket": "club-app-81238.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:791446783357:android:46127f56fc05dede8ef814",
+        "android_client_info": {
+          "package_name": "com.clubapp.club_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "791446783357-od12bbjd02rm0vocdg1e0v1314o7bgmt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6qhHTCBXaaJGXJDhWyL4I44Sg6wNnuCs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "791446783357-od12bbjd02rm0vocdg1e0v1314o7bgmt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

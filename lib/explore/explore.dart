@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+
 
 class ExplorePage extends StatelessWidget {
   @override
@@ -72,6 +75,10 @@ class EventCard extends StatelessWidget {
 }
 
 class FeaturedCard extends StatelessWidget {
+  final databaseReference = Firestore.instance.collection("books")
+      .document("MIR1ZEW86XXujHGGxzzA");
+//databaseReference.collection("users")
+
   @override
   Widget build(BuildContext context) {
     return Card(
