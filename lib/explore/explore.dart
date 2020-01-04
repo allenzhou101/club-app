@@ -75,8 +75,8 @@ class EventCard extends StatelessWidget {
 }
 
 class FeaturedCard extends StatelessWidget {
-  final databaseReference = Firestore.instance.collection("books")
-      .document("MIR1ZEW86XXujHGGxzzA");
+  final databaseReference = Firestore.instance;
+
 //databaseReference.collection("users")
 
   @override
