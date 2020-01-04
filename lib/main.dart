@@ -5,7 +5,8 @@ import 'calendar/calendar.dart';
 import 'profile/profile.dart';
 import 'package:club_app/search/search.dart';
 import 'package:club_app/eventpage/event_page.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:club_app/login/login.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() => runApp(MyApp());

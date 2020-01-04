@@ -46,6 +46,9 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        //next line needed?
+        multiDexEnabled true
+
     }
 
     buildTypes {
@@ -67,8 +70,10 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.google.firebase:firebase-analytics:17.2.0'
-    //maybe this next line doesn't belong?
+    //maybe these next 2 lines don't belong?
     implementation 'com.google.firebase:firebase-firestore:21.3.1'
+    implementation 'com.android.support:multidex:1.0.3'
+
 
 }
 
