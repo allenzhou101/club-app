@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "791446783357-peb3c0a4koa3h8hvi1hstko6bj10endj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.clubapp.club_app",
+            "certificate_hash": "5e7ac1448bbefde2f1443af69de41e4e8e79e7fd"
+          }
+        },
+        {
           "client_id": "791446783357-od12bbjd02rm0vocdg1e0v1314o7bgmt.apps.googleusercontent.com",
           "client_type": 3
         }

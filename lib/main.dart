@@ -6,7 +6,7 @@ import 'profile/profile.dart';
 import 'package:club_app/search/search.dart';
 import 'package:club_app/eventpage/event_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:club_app/login/login.dart';
+import 'login/login.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() => runApp(MyApp());
@@ -23,6 +23,25 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.deepOrange,
       ),
       home: LoginPage(),
+//        Scaffold( Center(
+//          child: Column(
+//            children: [
+//              MaterialButton(
+//                onPressed: () => null,
+//                color: Colors.white,
+//                textColor: Colors.black,
+//                child: Text('Login with Google'),
+//              ),
+//              MaterialButton(
+//                onPressed: () => null,
+//                color: Colors.red,
+//                textColor: Colors.white,
+//                child: Text('Sign out'),
+//              )
+//            ],
+//          ),
+//        ),
+     // ),
       debugShowCheckedModeBanner: false,
     );
   }
