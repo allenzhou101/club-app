@@ -1,3 +1,4 @@
+import 'package:club_app/main.dart';
 import 'package:flutter/material.dart';
 import 'sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -37,7 +38,7 @@ class _LoginPageState extends State<LoginPage> {
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) {
-                return FirstScreen();
+                return Home();
               },
             ),
           );

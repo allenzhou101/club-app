@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:club_app/main.dart';
+import 'package:club_app/login/sign_in.dart';
+import 'package:club_app/login/login.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProfilePage extends StatelessWidget {
   @override
@@ -54,7 +57,56 @@ class InnerProfileState extends State<InnerProfile> {
   }
 }
 
+final databaseReference = Firestore.instance;
+int interestCount;
+void createUserRecord() async {
+  await databaseReference.collection("users").document(uid).setData({
+    'name': name,
+    'interests': 3
+  });
+
+  Firestore.instance
+      .collection('users')
+      .where("name", isEqualTo: "Anthony Zhou")
+      .snapshots()
+      .listen((data) =>
+      data.documents.forEach((doc) {
+        interestCount = doc["interests"];
+        print(interestCount);
+      }));
+//  await databaseReference.collection("users").document(uid).collection("myEvents").document("Post #1").setData({
+//    'location': 'Dallas'
+//  });
+
+}
 class MyBio extends StatelessWidget {
+  //messing with the database
+  void deleteData() {
+    try {
+      databaseReference
+          .collection('users')
+          .document('aOwdecyWpJnxSwwmtydN')
+          .delete();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+  void createRecord() async {
+    await databaseReference.collection("users")
+        .document("1")
+        .setData({
+      'title': 'Mastering Flutter',
+      'description': 'Programming Guide for Dart'
+    });
+
+    DocumentReference ref = await databaseReference.collection("users")
+        .add({
+      'title': 'Flutter in Action',
+      'description': 'Complete Programming Guide to learn Flutter'
+    });
+    print(ref.documentID);
+  }
+  //finished messing with the database
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -62,17 +114,30 @@ class MyBio extends StatelessWidget {
           Container(
             width: 50,
             height: 50,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.black
-            ),
+//            decoration: BoxDecoration(
+//              image: DecorationImage(
+//                image: AssetImage(imageUrl)
+//              )
+//            ),
           ),
         SizedBox(width: 20),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
          children: <Widget>[
-           Text("First Name Last Name"),
-           Text("A short description")
+           Text(firstName + " " + lastName),
+           Text(email),
+           Text("A short description"),
+           RaisedButton(
+             child: Text("Sign Out"),
+             onPressed: () {
+               signOutGoogle();
+               Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) {return LoginPage();}), ModalRoute.withName('/'));
+
+             }
+
+           ),
+//
+
          ],
         ),
         IconButton(
