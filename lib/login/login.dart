@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
+import 'interests.dart';
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -29,7 +29,6 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-
   Widget _signInButton() {
     return OutlineButton(
       splashColor: Colors.grey,
@@ -38,7 +37,12 @@ class _LoginPageState extends State<LoginPage> {
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) {
-                return Home();
+                if (interestBoolean) {
+                  return InterestPage();
+                }
+                else {
+                  return Home();
+                }
               },
             ),
           );

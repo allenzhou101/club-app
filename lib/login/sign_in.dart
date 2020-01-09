@@ -1,11 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:club_app/profile/profile.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
 String name, firstName, lastName, email, imageUrl, uid;
-
+bool interestBoolean = false;
 
 Future<String> signInWithGoogle() async {
   final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
@@ -41,9 +42,18 @@ Future<String> signInWithGoogle() async {
   assert(user.uid == currentUser.uid);
 
 
+  final snapShot = await Firestore.instance
+      .collection('users')
+      .document(uid)
+      .get();
 
+  if (snapShot == null || !snapShot.exists) {
+    // Document with id == docId doesn't exist.
+    interestBoolean = true;
+    createUserRecord();
 
-  createUserRecord();
+  }
+
   return 'signInWithGoogle succeeded: $user';
 }
 

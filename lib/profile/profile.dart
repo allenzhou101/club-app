@@ -61,19 +61,18 @@ final databaseReference = Firestore.instance;
 int interestCount;
 void createUserRecord() async {
   await databaseReference.collection("users").document(uid).setData({
-    'name': name,
-    'interests': 3
+    'name': name
   });
-
-  Firestore.instance
-      .collection('users')
-      .where("name", isEqualTo: "Anthony Zhou")
-      .snapshots()
-      .listen((data) =>
-      data.documents.forEach((doc) {
-        interestCount = doc["interests"];
-        print(interestCount);
-      }));
+//
+//  Firestore.instance
+//      .collection('users')
+//      .where("name", isEqualTo: "Anthony Zhou")
+//      .snapshots()
+//      .listen((data) =>
+//      data.documents.forEach((doc) {
+//        interestCount = doc["interests"];
+//        print(interestCount);
+//      }));
 //  await databaseReference.collection("users").document(uid).collection("myEvents").document("Post #1").setData({
 //    'location': 'Dallas'
 //  });
