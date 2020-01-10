@@ -80,31 +80,31 @@ void createUserRecord() async {
 }
 class MyBio extends StatelessWidget {
   //messing with the database
-  void deleteData() {
-    try {
-      databaseReference
-          .collection('users')
-          .document('aOwdecyWpJnxSwwmtydN')
-          .delete();
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-  void createRecord() async {
-    await databaseReference.collection("users")
-        .document("1")
-        .setData({
-      'title': 'Mastering Flutter',
-      'description': 'Programming Guide for Dart'
-    });
-
-    DocumentReference ref = await databaseReference.collection("users")
-        .add({
-      'title': 'Flutter in Action',
-      'description': 'Complete Programming Guide to learn Flutter'
-    });
-    print(ref.documentID);
-  }
+//  void deleteData() {
+//    try {
+//      databaseReference
+//          .collection('users')
+//          .document('aOwdecyWpJnxSwwmtydN')
+//          .delete();
+//    } catch (e) {
+//      print(e.toString());
+//    }
+//  }
+//  void createRecord() async {
+//    await databaseReference.collection("users")
+//        .document("1")
+//        .setData({
+//      'title': 'Mastering Flutter',
+//      'description': 'Programming Guide for Dart'
+//    });
+//
+//    DocumentReference ref = await databaseReference.collection("users")
+//        .add({
+//      'title': 'Flutter in Action',
+//      'description': 'Complete Programming Guide to learn Flutter'
+//    });
+//    print(ref.documentID);
+//  }
   //finished messing with the database
   @override
   Widget build(BuildContext context) {

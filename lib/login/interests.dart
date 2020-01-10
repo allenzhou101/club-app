@@ -74,9 +74,7 @@ class InterestPageState extends State<InterestPage> {
   }
 
   Text myText(DocumentSnapshot document) {
-    if (document["Outdoors"]) {
-      
-    }
-    return Text(document["name"]);
+
+    return Text(document["name"], textDirection: TextDirection.ltr,);
   }
 }

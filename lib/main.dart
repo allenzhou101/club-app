@@ -4,6 +4,8 @@ import 'explore/explore.dart';
 import 'calendar/calendar.dart';
 import 'profile/profile.dart';
 import 'package:club_app/search/search.dart';
+import 'package:club_app/upload/upload.dart';
+
 import 'package:club_app/eventpage/event_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'login/login.dart';
@@ -61,6 +63,7 @@ class _HomeState extends State<Home> {
   final List<Widget> _children = [
     ExplorePage(),
     SearchPage(),
+    UploadPage(),
     CalendarPage(),
     ProfilePage()
   ];
@@ -90,6 +93,10 @@ class _HomeState extends State<Home> {
               title: new Text('Search'),
             ),
             BottomNavigationBarItem(
+              icon: new Icon(Icons.file_upload),
+              title: new Text('Upload'),
+            ),
+            BottomNavigationBarItem(
               icon: new Icon(Icons.calendar_today),
               title: new Text('Calendar'),
             ),
@@ -101,7 +108,9 @@ class _HomeState extends State<Home> {
     );
   }
 
-
+//Navigator.push(
+//    context,
+//    MaterialPageRoute(builder: (context) => SecondRoute())
 }
 
 

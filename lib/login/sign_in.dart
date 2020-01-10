@@ -49,7 +49,7 @@ Future<String> signInWithGoogle() async {
 
   if (snapShot == null || !snapShot.exists) {
     // Document with id == docId doesn't exist.
-    interestBoolean = true;
+    //interestBoolean = true;
     createUserRecord();
 
   }
