@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-
-
+import 'package:club_app/eventpage/event_page.dart';
 class ExplorePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -44,16 +42,41 @@ class EventRow extends StatelessWidget {
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold))),
       SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          child: Row(mainAxisSize: MainAxisSize.min, children: [
-            EventCard(name: "Texas Grower's Farm Day", date: "Sat, Dec 7"),
-            SizedBox(width: 20),
-            EventCard(name: "Texas Grower's Farm Day", date: "Sat, Dec 7"),
-            SizedBox(width: 20),
-            EventCard(name: "Texas Grower's Farm Day", date: "Sat, Dec 7")
-          ]))
+          child: StreamBuilder<QuerySnapshot>(
+              stream: Firestore.instance.collection('events').snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) return Text("Loading...");
+
+                return Container(
+                    height: 300,
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        shrinkWrap: true,
+                        itemCount: snapshot.data.documents.length,
+                        padding: const EdgeInsets.only(top: 5.0),
+                        itemBuilder: (context, index) {
+                          DocumentSnapshot ds = snapshot.data.documents[index];
+                          print(ds['category']);
+                          if (ds['category'] == category ||
+                              category == 'Popular Now') {
+                            return EventCard(
+                                name: ds["eventName"], date: ds["time"]);
+                            //, location: ds['location'], description: ds['description'], organizingGroup: ds['organizingGroup']
+                          }
+                          return Text("");
+                        }));
+              }))
     ]);
   }
 }
+
+//@override
+//List<Widget> makeListWidget(AsyncSnapshot snapshot) {
+//  print("check");
+//  return snapshot.data.documents.map<Widget>((document) {
+//    EventCard(name: "eventName", date:"time");
+//  }).toList();
+//}
 
 class EventCard extends StatelessWidget {
   final String name, date;
@@ -62,15 +85,21 @@ class EventCard extends StatelessWidget {
 
   @override
   Widget build(context) {
-    return SizedBox(
-        width: 200,
-        child: Column(children: [
-          Image.asset('assets/images/lanterns.jpg'),
-          ListTile(
-            title: Text(name),
-            subtitle: Text('Fri, Nov 29'),
-          )
-        ]));
+    return GestureDetector(
+        child: SizedBox(
+            width: 200,
+            child: Column(children: [
+              Image.asset('assets/images/lanterns.jpg'),
+              ListTile(
+                title: Text(name),
+                subtitle: Text(date),
+              )
+            ])),
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) {return EventInner();}
+          ));
+        });
   }
 }
 

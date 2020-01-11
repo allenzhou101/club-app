@@ -2,6 +2,7 @@ import 'package:club_app/profile/profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:club_app/login/sign_in.dart';
+import 'package:club_app/main.dart';
 
 class UploadPage extends StatelessWidget {
 
@@ -32,7 +33,7 @@ class UploadEvent extends StatefulWidget {
 }
 
 class UploadEventState extends State<UploadEvent> {
-  String eventName, organizingGroup, description, location, time;
+  String eventName, organizingGroup, description, location, time, category;
   var organizingIndividuals = ['words', 'morewords'];
   var attendees = new Map<String, String>();
   final _formKey = GlobalKey<FormState>();
@@ -92,7 +93,16 @@ class UploadEventState extends State<UploadEvent> {
                             }
                             return null;
                           }, decoration: InputDecoration(labelText: 'Organizing Individuals'),
-                          onSaved: (value) => organizingIndividuals = [value],
+                          onSaved: (value) => organizingIndividuals = [uid],
+                        ),
+                        TextFormField(
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Please enter some text';
+                            }
+                            return null;
+                          }, decoration: InputDecoration(labelText: 'Organizing Individuals'),
+                          onSaved: (value) => category = value,
                         ),
                         TextFormField(
                             style: new TextStyle(
@@ -128,7 +138,11 @@ class UploadEventState extends State<UploadEvent> {
                                   'location': location,
                                   'time': time,
                                 });
-                                Navigator.pop(context);
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) {
+                                      return Home();
+                                  },
+                                ));
 
 //                            .then((doc) {
 //                          docID = doc.documentID.toString();

@@ -25,7 +25,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Colors.deepOrange,
         primarySwatch: Colors.deepOrange,
-      ),
+        textTheme: TextTheme(
+        headline: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+    title: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold,),
+    body1: TextStyle(fontSize: 18)
+      )),
       home: LoginPage(),
 //        Scaffold( Center(
 //          child: Column(

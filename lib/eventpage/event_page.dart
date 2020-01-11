@@ -1,27 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:club_app/main.dart';
+
 //import 'package:cached_network_image/cached_network_image.dart';
 
 //use Hero() Widget
 
-class EventPage extends StatelessWidget {
+//class EventPage extends StatelessWidget {
+//  @override
+//  Widget build(BuildContext context) {
+//    return MaterialApp(
+//      debugShowCheckedModeBanner: false,
+//      theme: ThemeData(
+//        // Use the old theme but apply the following three changes
+//          textTheme: TextTheme(
+//            headline: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+//        title: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold,),
+//            body1: TextStyle(fontSize: 18)
+//
+//    )),
+//      home: EventInner(),
+//    );
+//  }
+//}
+class EventInner extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        // Use the old theme but apply the following three changes
-          textTheme: TextTheme(
-            headline: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-        title: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold,),
-            body1: TextStyle(fontSize: 18)
-
-    )),
-      home: EventInner(),
-    );
-  }
+  EventInnerState createState() => EventInnerState();
 }
+class EventInnerState extends State<EventInner> {
 
-class EventInner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +43,10 @@ class EventInner extends StatelessWidget {
         appBar: AppBar(
           leading: new IconButton(
             icon: new Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              return Home();
+            })
+            ),
           ),
           title: Text(""),
           centerTitle: true,

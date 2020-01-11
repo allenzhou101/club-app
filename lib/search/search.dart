@@ -112,7 +112,7 @@ class SearchInner extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         child: Center(
-            child: Column(children: [
+            child: ListView(children: [
       SizedBox(height: 40),
       SearchBy(category: "time"),
       SearchBy(category: "mood"),
