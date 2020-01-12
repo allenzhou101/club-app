@@ -123,7 +123,7 @@ class MyBio extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
          children: <Widget>[
-           Text(firstName + " " + lastName),
+           Text(name),
            Text(email),
            Text("A short description"),
            RaisedButton(
@@ -131,9 +131,7 @@ class MyBio extends StatelessWidget {
              onPressed: () {
                signOutGoogle();
                Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) {return LoginPage();}), ModalRoute.withName('/'));
-
              }
-
            ),
 //
 

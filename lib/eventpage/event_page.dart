@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:club_app/main.dart';
+import 'package:club_app/login/sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:club_app/calendar/calendar.dart';
 
 //import 'package:cached_network_image/cached_network_image.dart';
 
@@ -25,16 +28,55 @@ import 'package:club_app/main.dart';
 class EventInner extends StatefulWidget {
   @override
   EventInnerState createState() => EventInnerState();
+  final String docID, name, date, location, description, organizingGroup;
+  EventInner({Key key, this.docID, this.name: "", this.date: "", this.location, this.description, this.organizingGroup}): super(key: key);
 }
+
 class EventInnerState extends State<EventInner> {
 
+  Future<void> yourGoing(String eventName, date) async {
+
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('You\'re Going!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(eventName),
+                Text(date),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('okay'),
+              onPressed: () {
+
+                  Navigator.of(context).pop();
+
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         bottomNavigationBar: Padding(
           padding: EdgeInsets.all(8.0),
           child: RaisedButton(
-            onPressed: () {},
+            onPressed: () {
+
+              Firestore.instance.collection("users").document(uid).updateData({
+                'myEvents': FieldValue.arrayUnion([widget.docID])
+              });
+              yourGoing(widget.name, widget.date);
+            },
             color: Colors.deepOrange,
             textColor: Colors.white,
             child: Text('Register'),
@@ -43,10 +85,7 @@ class EventInnerState extends State<EventInner> {
         appBar: AppBar(
           leading: new IconButton(
             icon: new Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return Home();
-            })
-            ),
+            onPressed: () => Navigator.of(context).pop(),
           ),
           title: Text(""),
           centerTitle: true,
@@ -58,17 +97,17 @@ class EventInnerState extends State<EventInner> {
                     children: [
                       HeroImage(),
                       SizedBox(height: 10),
-                      HeroTitle(),
+                      HeroTitle(widget.name),
                       SizedBox(height: 20),
-                      Organizer(),
+                      Organizer(widget.organizingGroup),
                       SizedBox(height: 20),
-                      Date(),
+                      Date(widget.date),
                       SizedBox(height: 20),
-                      Location(),
+                      Location(widget.location),
                       SizedBox(height: 20),
                       PeopleGoing(numPeople: 14),
                       SizedBox(height: 20),
-                      About(),
+                      About(widget.description),
                       SizedBox(height: 20),
                       Contact(),
                       SizedBox(height: 20),
@@ -91,22 +130,31 @@ class HeroImage extends StatelessWidget {
 }
 
 class HeroTitle extends StatelessWidget {
+  HeroTitle(this.name);
+  final String name;
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text("title describing the event",
+      child: Text(name,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 28))
     );
   }
 }
 
 class Organizer extends StatelessWidget {
+  Organizer(this.organizingGroup);
+  final String organizingGroup;
+
   @override
   Widget build(BuildContext context) {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      IconPlusData(
-          icon: "http://via.placeholder.com/350x150",
-          data: "Name of Organization"),
+//      IconPlusData(
+//          icon: "http://via.placeholder.com/350x150",
+//          data: organizingGroup),
+    Container(
+      width: 200,
+      child: Text(organizingGroup)
+    ),
       SizedBox(width: 20),
       RaisedButton(child: Text("Follow"), onPressed: () {}),
     ]);
@@ -115,18 +163,22 @@ class Organizer extends StatelessWidget {
 
 
 class Date extends StatelessWidget {
+  Date(this.date);
+  final String date;
   @override
   Widget build(BuildContext context) {
     return IconPlusData(
-        icon: "http://via.placeholder.com/350x150", data: "Date");
+        icon: "http://via.placeholder.com/350x150", data: date);
   }
 }
 
 class Location extends StatelessWidget {
+  Location(this.location);
+  final String location;
   @override
   Widget build(BuildContext context) {
     return IconPlusData(
-        icon: "http://via.placeholder.com/350x150", data: "Location");
+        icon: "http://via.placeholder.com/350x150", data: location);
   }
 }
 
@@ -172,11 +224,14 @@ class PeopleGoing extends StatelessWidget {
 }
 
 class About extends StatelessWidget {
+  final String description;
+  About(this.description);
   @override
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text("About", style: Theme.of(context).textTheme.title),
-      Text("Here are some words describing what the event is about. Here are some words describing what the event is about. Here are some words describing what the event is about. "),
+      Text(description),
+      //Text("Here are some words describing what the event is about. Here are some words describing what the event is about. Here are some words describing what the event is about. "),
       Text("\nread more", style: TextStyle(color: Colors.deepOrange))
     ]);
   }
@@ -298,6 +353,7 @@ class IconPlusData extends StatelessWidget {
       CircleImage(iconUrl: icon),
       SizedBox(width: 10),
       Text(data, style: Theme.of(context).textTheme.body1)
+
     ]);
   }
 }

@@ -56,12 +56,14 @@ class EventRow extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 5.0),
                         itemBuilder: (context, index) {
                           DocumentSnapshot ds = snapshot.data.documents[index];
-                          print(ds['category']);
+                         // print(ds['category']);
+                          //print(ds.documentID);
                           if (ds['category'] == category ||
                               category == 'Popular Now') {
                             return EventCard(
-                                name: ds["eventName"], date: ds["time"]);
-                            //, location: ds['location'], description: ds['description'], organizingGroup: ds['organizingGroup']
+                                docID: ds.documentID,name: ds["eventName"], date: ds["time"], location: ds['location'], description: ds['description'], organizingGroup: ds['organizingGroup']
+                            );
+                            //, location: ds['location'], description: ds['description'], organizingGroup: ds['organizingGroup'], organizingIndividuals: ds['organizingIndividuals'], participatingIndividuals: ds['participatingIndividuals']
                           }
                           return Text("");
                         }));
@@ -79,10 +81,9 @@ class EventRow extends StatelessWidget {
 //}
 
 class EventCard extends StatelessWidget {
-  final String name, date;
-
-  EventCard({this.name: "", this.date: ""});
-
+  final String docID, name, date, location, description, organizingGroup;
+  EventCard({this.docID, this.name: "", this.date: "", this.location, this.description, this.organizingGroup});
+  //this.location, this.description, this.organizingGroup, this.organizingIndividuals, this.participatingIndividuals
   @override
   Widget build(context) {
     return GestureDetector(
@@ -97,7 +98,7 @@ class EventCard extends StatelessWidget {
             ])),
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) {return EventInner();}
+            builder: (context) {return EventInner(docID: this.docID, name: this.name, date: this.date, location: this.location, description: this.description, organizingGroup:  this.organizingGroup);}
           ));
         });
   }
