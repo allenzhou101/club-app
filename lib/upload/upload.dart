@@ -37,7 +37,28 @@ class UploadEventState extends State<UploadEvent> {
   var organizingIndividuals = ['words', 'morewords'];
   var attendees = new Map<String, String>();
   final _formKey = GlobalKey<FormState>();
-  @override
+
+  //Input date and time
+  DateTime selectedDate = DateTime.now();
+  final now = DateTime.now();
+
+
+  Future<Null> _selectDate(BuildContext context) async {
+    final lastMidnight = new DateTime(now.year, now.month, now.day-4);
+    print(now);
+    print(lastMidnight);
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: lastMidnight,
+        lastDate: DateTime(2101));
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        selectedDate = picked;
+        //print(picked);
+      });
+  }
+    @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Form(
@@ -50,6 +71,18 @@ class UploadEventState extends State<UploadEvent> {
                        child: ListView(
 
                       children: <Widget>[
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Text("${selectedDate.toLocal()}".split(' ')[0]),
+                            SizedBox(height: 20.0,),
+                            RaisedButton(
+                              onPressed: () => _selectDate(context),
+                              child: Text('Select date'),
+                            ),
+                          ],
+                        ),
+
                         TextFormField(
                           validator: (value) {
                             if (value.isEmpty) {
