@@ -4,6 +4,7 @@ import 'package:club_app/main.dart';
 import 'package:club_app/login/sign_in.dart';
 import 'package:club_app/login/login.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:club_app/create_group/create_group.dart';
 
 class ProfilePage extends StatelessWidget {
   @override
@@ -155,7 +156,16 @@ class MyGroups extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
     Text("Groups - 6"),
-            Text("Join New Groups")
+            GestureDetector(
+              child: Text("Start New Group", style: TextStyle(color: Colors.blue)),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) {
+                    return CreateGroup();
+                  }
+                ));
+              }
+            )
     ]
         ),
         GroupFormat(),

@@ -31,9 +31,9 @@ class UploadPage extends StatelessWidget {
 class UploadEvent extends StatefulWidget {
   UploadEventState createState() => UploadEventState();
 }
-
+String organizingGroup;
 class UploadEventState extends State<UploadEvent> {
-  String eventName, organizingGroup, description, location, time, category;
+  String eventName, description, location, time, category;
   var organizingIndividuals = ['words', 'morewords'];
   var attendees = new Map<String, String>();
   final _formKey = GlobalKey<FormState>();
@@ -43,7 +43,7 @@ class UploadEventState extends State<UploadEvent> {
   final now = DateTime.now();
 
   Future<Null> _selectDate(BuildContext context) async {
-    final lastMidnight = new DateTime(now.year, now.month, now.day - 1);
+    final lastMidnight = new DateTime(now.year, now.month, now.day - 2);
 
     final DateTime picked = await showDatePicker(
         context: context,
@@ -85,6 +85,7 @@ class UploadEventState extends State<UploadEvent> {
     textController.text = "${selectedDate.toLocal()}".split(' ')[0] +
         " " +
         selectedTime.toString().substring(10, 15);
+
 
     return Form(
         key: _formKey,
@@ -138,16 +139,24 @@ class UploadEventState extends State<UploadEvent> {
                 onSaved: (value) => location = value,
               ),
 
-              TextFormField(
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter some text';
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(labelText: 'Organizing Group'),
-                onSaved: (value) => organizingGroup = uid,
-              ),
+//              TextFormField(
+//                validator: (value) {
+//                  if (value.isEmpty) {
+//                    return 'Please enter some text';
+//                  }
+//                  return null;
+//                },
+//                decoration: InputDecoration(labelText: 'Organizing Group'),
+//                onSaved: (value) => organizingGroup = uid,
+//              ),
+
+
+              BuildForm(),
+
+
+
+
+
               TextFormField(
                 validator: (value) {
                   if (value.isEmpty) {
@@ -220,5 +229,88 @@ class UploadEventState extends State<UploadEvent> {
             ],
           ),
         ));
+  }
+}
+class BuildForm extends StatefulWidget {
+  BuildFormState createState() => BuildFormState();
+}
+class BuildFormState extends State<BuildForm>{
+  var _currentSelectedValue;
+  //var organizingGroup;
+
+  //List<String> categoryList = [];
+
+//    List<String> categoryList = ["a"];
+//    Firestore.instance
+//        .collection('users')
+//        .document(uid)
+//        .get()
+//        .then((DocumentSnapshot ds) {
+//      // use ds as a snapshot
+//      //categoryList.add(ds['groupAdmin'].toString());
+//      //var List = ds['groupAdmin'].Cast<String>().toList();
+//      categoryList = new List<String>.from(ds['groupAdmin']);
+//
+//    });
+  var textStyle = TextStyle(color: Colors.blue, fontSize: 16.0);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: Firestore.instance.collection("users").document(uid).snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Text(
+            'No Data...',
+          );
+        } else {
+          DocumentSnapshot ds = snapshot.data;
+          List<String> categoryList = new List<String>.from(ds['groupAdmin']);
+          //print("a");
+          return FormField<String>(
+              validator: (value) {
+                if (value.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              },
+              builder: (FormFieldState<String> state) {
+                return InputDecorator(
+                  decoration: InputDecoration(
+                      labelStyle: textStyle,
+                      errorStyle: TextStyle(color: Colors.redAccent, fontSize: 16.0),
+                      hintText: 'Please select hosting group',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
+                  isEmpty: _currentSelectedValue == null,
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: _currentSelectedValue,
+                      isDense: true,
+                      onChanged: (String newValue) {
+                        setState(() {
+                          _currentSelectedValue = newValue;
+                          state.didChange(newValue);
+                          //print(_currentSelectedValue);
+                        });
+
+                      },
+                      items: categoryList.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                );
+              },
+              onSaved: (value) {
+                organizingGroup = _currentSelectedValue;
+              }
+
+          );
+        }
+      },
+    );
   }
 }

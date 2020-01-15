@@ -12,7 +12,7 @@ import 'login/login.dart';
 import 'login/interests.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'orgpage/orgpage.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
     title: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
     body1: TextStyle(fontSize: 18)
       )),
-      home: LoginPage(),
+      home: OrgPage(),
 //        Scaffold( Center(
 //          child: Column(
 //            children: [
