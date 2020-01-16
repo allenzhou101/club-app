@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
     title: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
     body1: TextStyle(fontSize: 18)
       )),
-      home: OrgPage(),
+      home: LoginPage(),
 //        Scaffold( Center(
 //          child: Column(
 //            children: [

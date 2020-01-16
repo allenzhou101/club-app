@@ -86,7 +86,9 @@ class UploadEventState extends State<UploadEvent> {
         " " +
         selectedTime.toString().substring(10, 15);
 
-
+    var _currentSelectedValue;
+    var categoryList = ["Tech", "Culture", "Sustainability"];
+    var textStyle = TextStyle(color: Colors.blue, fontSize: 16.0);
     return Form(
         key: _formKey,
         child: Padding(
@@ -168,17 +170,10 @@ class UploadEventState extends State<UploadEvent> {
                     InputDecoration(labelText: 'Organizing Individuals'),
                 onSaved: (value) => organizingIndividuals = [uid],
               ),
-              TextFormField(
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter some text';
-                  }
-                  return null;
-                },
-                decoration:
-                    InputDecoration(labelText: 'Organizing Individuals'),
-                onSaved: (value) => category = value,
-              ),
+
+              BuildCategoryForm(),
+
+
               TextFormField(
                 style: new TextStyle(color: Colors.black),
                 keyboardType: TextInputType.multiline,
@@ -236,22 +231,7 @@ class BuildForm extends StatefulWidget {
 }
 class BuildFormState extends State<BuildForm>{
   var _currentSelectedValue;
-  //var organizingGroup;
 
-  //List<String> categoryList = [];
-
-//    List<String> categoryList = ["a"];
-//    Firestore.instance
-//        .collection('users')
-//        .document(uid)
-//        .get()
-//        .then((DocumentSnapshot ds) {
-//      // use ds as a snapshot
-//      //categoryList.add(ds['groupAdmin'].toString());
-//      //var List = ds['groupAdmin'].Cast<String>().toList();
-//      categoryList = new List<String>.from(ds['groupAdmin']);
-//
-//    });
   var textStyle = TextStyle(color: Colors.blue, fontSize: 16.0);
 
   @override
@@ -265,8 +245,8 @@ class BuildFormState extends State<BuildForm>{
           );
         } else {
           DocumentSnapshot ds = snapshot.data;
+
           List<String> categoryList = new List<String>.from(ds['groupAdmin']);
-          //print("a");
           return FormField<String>(
               validator: (value) {
                 if (value.isEmpty) {
@@ -313,4 +293,80 @@ class BuildFormState extends State<BuildForm>{
       },
     );
   }
+//  List<String> list;
+//  List<String>  buildGroupList(groupIDs)  {
+//    list = new List();
+//    for (int i = 0; i < groupIDs.length; i ++) {
+//      futureString(groupIDs, i);
+//    }
+//    print(list.toString());
+//    return list;
+//  }
+//  Future<String> futureString(groupIDs, i) async {
+//
+//    Firestore.instance.collection("groups").document(groupIDs[i]).get().then((DocumentSnapshot ds) {
+//      String name = ds.data["groupName"];
+//      list.add("" + name);
+//    });
+//    return "Hello";
+//  }
 }
+
+
+class BuildCategoryForm extends StatefulWidget {
+  BuildCategoryFormState createState() => BuildCategoryFormState();
+}
+class BuildCategoryFormState extends State<BuildCategoryForm> {
+  var _currentSelectedValue;
+  var categoryList = ["Tech", "Culture", "Sustainability"];
+  var textStyle = TextStyle(color: Colors.blue, fontSize: 16.0);
+
+  @override
+  Widget build(BuildContext context) {
+    return FormField<String>(
+        validator: (value) {
+          if (value.isEmpty) {
+            return 'Please enter some text';
+          }
+          return null;
+        },
+        builder: (FormFieldState<String> state) {
+          return InputDecorator(
+            decoration: InputDecoration(
+                labelStyle: textStyle,
+                errorStyle: TextStyle(color: Colors.redAccent, fontSize: 36.0),
+                hintText: 'Please select category',
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0))),
+            isEmpty: _currentSelectedValue == null,
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: _currentSelectedValue,
+                isDense: true,
+                onChanged: (String newValue) {
+                  setState(() {
+                    _currentSelectedValue = newValue;
+                    state.didChange(newValue);
+                    //print(_currentSelectedValue);
+                  });
+                },
+                items: categoryList.map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+            ),
+          );
+        },
+
+        onSaved: (value) {
+
+          organizingGroup = _currentSelectedValue;
+        }
+
+    );
+  }
+}
+

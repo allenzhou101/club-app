@@ -1,24 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:club_app/explore/explore.dart';
 
 class OrgPage extends StatefulWidget {
-  OrgPageState createState() => OrgPageState();
   final String orgID;
   OrgPage({Key key, this.orgID}): super(key: key);
+  OrgPageState createState() => OrgPageState();
+
 }
 
 class OrgPageState extends State<OrgPage> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
+    print(widget.orgID);
     return Scaffold(
         body: StreamBuilder(
-          stream: Firestore.instance.collection('groups').document("xxjY6BHZ82IxX8zdFly3").snapshots(),
+          stream: Firestore.instance.collection('groups').document(widget.orgID).snapshots(),
           builder: (context, snapshot) {
 
             if (!snapshot.hasData) return Text("Loading...");
             else {
               DocumentSnapshot ds = snapshot.data;
+
               List<String> eventList = new List<String>.from(ds['eventList']);
 
               return Center(
@@ -71,59 +75,65 @@ class About extends StatelessWidget {
   }
 }
 
+
+
 class Events extends StatelessWidget {
   List<String> eventList;
   Events({this.eventList});
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    print(eventList[0]);
-    final children;
+    return new SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+        children: ListMyWidgets(eventList)));
+  }
+
+  List<Widget> ListMyWidgets(eventList) {
+    List<Widget> list = new List();
     for (var i = 0; i < eventList.length; i++) {
-      StreamBuilder(
+      list.add(StreamBuilder(
           stream: Firestore.instance.collection("events").document(eventList[i]).snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              print("Hey");
               return Text("Loading");
-
             }
             else {
-              print(snapshot.data);
-              print("Hello");
-              return Text("Hey");
+              var ds = snapshot.data;
+              return EventCard(
+                  docID: ds.documentID,name: ds["eventName"], date: ds["time"], location: ds['location'], description: ds['description'], organizingGroup: ds['organizingGroup']
+              );
             }
           }
-      );
+      ));
     }
-    return Text("Hello");
+
+    return list;
   }
 
-  buildList (List<String> eventList, int i){
-    StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('events').snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) return Text("Loading...");
-
-          return Container(
-              height: 300,
-              child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  itemCount: snapshot.data.documents.length,
-                  padding: const EdgeInsets.only(top: 5.0),
-                  itemBuilder: (context, index) {
-                    DocumentSnapshot ds = snapshot.data.documents[index];
-                    // print(ds['category']);
-                    //print(ds.documentID);
-                    if (ds.documentID == eventList[i]) {
-                      return Text(ds['eventName']);
-                      //, location: ds['location'], description: ds['description'], organizingGroup: ds['organizingGroup'], organizingIndividuals: ds['organizingIndividuals'], participatingIndividuals: ds['participatingIndividuals']
-                    }
-                    return Text("");
-                  }));
-        });
-}
+//  buildList (List<String> eventList, int i){
+//    StreamBuilder<QuerySnapshot>(
+//        stream: Firestore.instance.collection('events').snapshots(),
+//        builder: (context, snapshot) {
+//          if (!snapshot.hasData) return Text("Loading...");
+//
+//          return Container(
+//              height: 300,
+//              child: ListView.builder(
+//                  scrollDirection: Axis.horizontal,
+//                  shrinkWrap: true,
+//                  itemCount: snapshot.data.documents.length,
+//                  padding: const EdgeInsets.only(top: 5.0),
+//                  itemBuilder: (context, index) {
+//                    DocumentSnapshot ds = snapshot.data.documents[index];
+//                    if (ds.documentID == eventList[i]) {
+//                      return Text(ds['eventName']);
+//                      //, location: ds['location'], description: ds['description'], organizingGroup: ds['organizingGroup'], organizingIndividuals: ds['organizingIndividuals'], participatingIndividuals: ds['participatingIndividuals']
+//                    }
+//                    return Text("");
+//                  }));
+//        });
+//}
 }
 
 

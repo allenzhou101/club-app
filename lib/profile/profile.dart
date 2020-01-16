@@ -124,8 +124,8 @@ class MyBio extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
          children: <Widget>[
-           Text(name),
-           Text(email),
+           Text(name.toString()),
+           Text(email.toString()),
            Text("A short description"),
            RaisedButton(
              child: Text("Sign Out"),
@@ -168,14 +168,30 @@ class MyGroups extends StatelessWidget {
             )
     ]
         ),
-        GroupFormat(),
-        GroupFormat(),
-        GroupFormat(),
+        StreamBuilder(
+          stream: Firestore.instance.collection("groups").snapshots(),
+          builder: (context, snapshot) {
+
+            //GroupFormat();
+            if (!snapshot.hasData) {
+              return Text("Loading");
+            }
+            else {
+              final ds = snapshot.data.documents.map((DocumentSnapshot document) {
+                print(document['groupName']);
+              });
+              return Text("Hello");
+            }
+
+          }
+        )
       ],
     );
   }
 }
 class GroupFormat extends StatelessWidget {
+  String groupName, memberCount;
+  GroupFormat({this.groupName, this.memberCount});
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -199,8 +215,8 @@ class GroupFormat extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text("Group Name"),
-              Text("Number of members")
+              Text(groupName),
+              Text(memberCount)
             ],
           ),
         ],

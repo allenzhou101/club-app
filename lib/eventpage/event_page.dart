@@ -3,6 +3,7 @@ import 'package:club_app/main.dart';
 import 'package:club_app/login/sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:club_app/calendar/calendar.dart';
+import 'package:club_app/orgpage/orgpage.dart';
 
 //import 'package:cached_network_image/cached_network_image.dart';
 
@@ -99,7 +100,7 @@ class EventInnerState extends State<EventInner> {
                       SizedBox(height: 10),
                       HeroTitle(widget.name),
                       SizedBox(height: 20),
-                      Organizer(widget.organizingGroup),
+                      Organizer(widget.organizingGroup, widget.docID),
                       SizedBox(height: 20),
                       Date(widget.date),
                       SizedBox(height: 20),
@@ -140,10 +141,13 @@ class HeroTitle extends StatelessWidget {
     );
   }
 }
+class Organizer extends StatefulWidget {
+  Organizer(this.organizingGroup, this.groupID);
+  final String organizingGroup, groupID;
+  OrganizerState createState() => OrganizerState();
+}
+ class OrganizerState extends State<Organizer>{
 
-class Organizer extends StatelessWidget {
-  Organizer(this.organizingGroup);
-  final String organizingGroup;
 
   @override
   Widget build(BuildContext context) {
@@ -153,10 +157,19 @@ class Organizer extends StatelessWidget {
 //          data: organizingGroup),
     Container(
       width: 200,
-      child: Text(organizingGroup)
+      child: GestureDetector(
+        child: Text(widget.organizingGroup),
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context){
+            return OrgPage(orgID: widget.groupID);
+          }));
+        },
+      )
     ),
       SizedBox(width: 20),
-      RaisedButton(child: Text("Follow"), onPressed: () {}),
+      RaisedButton(child: Text("Follow"), onPressed: () {
+
+      }),
     ]);
   }
 }
