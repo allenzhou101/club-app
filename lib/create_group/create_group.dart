@@ -167,6 +167,8 @@ class CreateGroupState extends State<CreateGroup> {
                         'location': location,
                         'category': category,
                         'interests': interests,
+                        'eventList': [],
+                        'members': []
                       };
 
                       createOrderMessage(map);

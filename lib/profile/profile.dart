@@ -5,6 +5,7 @@ import 'package:club_app/login/sign_in.dart';
 import 'package:club_app/login/login.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:club_app/create_group/create_group.dart';
+import 'package:club_app/orgpage/orgpage.dart';
 
 class ProfilePage extends StatelessWidget {
   @override
@@ -45,11 +46,11 @@ class InnerProfileState extends State<InnerProfile> {
         Divider(),
         MyGroups(),
         Divider(),
-        MyInterests(),
-        Divider(),
-        MyFriends(),
-        Divider(),
-        MyFriendsAreDoing(),
+//        MyInterests(),
+//        Divider(),
+//        MyFriends(),
+//        Divider(),
+//        MyFriendsAreDoing(),
         //Divider(),
         //SuggestedFriends()
       ],
@@ -147,7 +148,19 @@ class MyBio extends StatelessWidget {
   }
 }
 
-class MyGroups extends StatelessWidget {
+class MyGroups extends StatefulWidget{
+  MyGroupsState createState() => MyGroupsState();
+}
+class MyGroupsState extends State<MyGroups> {
+
+  Widget buildGroupList = Column(children: <Widget>[Text("No groups")],);
+
+  MyGroupsState() {
+    buildStreamList().then((val) => setState(() {
+      buildGroupList = val;
+    }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -168,27 +181,94 @@ class MyGroups extends StatelessWidget {
             )
     ]
         ),
-        StreamBuilder(
-          stream: Firestore.instance.collection("groups").snapshots(),
-          builder: (context, snapshot) {
-
-            //GroupFormat();
-            if (!snapshot.hasData) {
-              return Text("Loading");
-            }
-            else {
-              final ds = snapshot.data.documents.map((DocumentSnapshot document) {
-                print(document['groupName']);
-              });
-              return Text("Hello");
-            }
-
-          }
-        )
+        buildGroupList,
       ],
     );
   }
-}
+    Future<Widget> buildStreamList() async {
+    List<Widget> list = [Text("No groups yet")];
+    List<String> adminList = [];
+    List<String> myGroups = [];
+    await Firestore.instance.collection("users").document(uid).get().then((DocumentSnapshot ds) {
+      if (!ds.exists) {
+        return Text("Nothing here to see");
+      }
+      else {
+        if (ds['groupAdmin'] != null && ds['groupAdmin'].length > 0) {
+          adminList = new List<String>.from(ds['groupAdmin']);
+          list = [];
+        }
+        if (ds['myGroups'] != null && ds['myGroups'] > 0) {
+          myGroups = new List<String>.from(ds['myGroups']);
+          list = [];
+        }
+      }
+    });
+    for (var i = 0; i < adminList.length; i++) {
+      await list.add(
+        StreamBuilder(
+          stream: Firestore.instance.collection('groups').document(adminList[i]).snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              var ds = snapshot.data;
+              return Container(
+                  width: 200,
+                  child: GestureDetector(
+                    child: Text(ds['groupName'].toString()),
+                    onTap: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) {
+                            return OrgPage(orgID: adminList[i]);
+                          }));
+                    },
+                  )
+              );
+            }
+            else {
+              return Text("Loading");
+            }
+          }
+        )
+      );
+    }
+    for (var i = 0; i < myGroups.length; i++) {
+      await list.add(
+          StreamBuilder(
+              stream: Firestore.instance.collection('groups').document(myGroups[i]).snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  var ds = snapshot.data;
+                  return Container(
+                      width: 200,
+                      child: GestureDetector(
+                        child: Text(ds['groupName'].toString()),
+                        onTap: () {
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) {
+                                return OrgPage(orgID: adminList[i]);
+                              }));
+                        },
+                      )
+                  );
+                }
+                else {
+                  return Text("Loading");
+                }
+              }
+          )
+      );
+    }
+      if (list == null || list == []) {
+        return Text("Loading");
+      }
+      else {
+        return Column(
+          children: list,
+        );
+      }
+    }
+  }
+
 class GroupFormat extends StatelessWidget {
   String groupName, memberCount;
   GroupFormat({this.groupName, this.memberCount});
