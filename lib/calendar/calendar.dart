@@ -5,38 +5,13 @@ import 'package:club_app/eventpage/event_page.dart';
 class CalendarPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Stream<DocumentSnapshot> courseDocStream = Firestore.instance
-        .collection('users')
-        .document(uid)
-        .snapshots();
+
       return Scaffold(
         appBar: AppBar(
           title: Text("Calendar"),
           leading: Text(""),
         ),
-        body: StreamBuilder<DocumentSnapshot>(
-          stream: courseDocStream,
-          builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-            //if (snapshot.connectionState == ConnectionState.active) {
-            if (snapshot.hasData) {
-              // get course document
-              var courseDocument = snapshot.data.data;
-
-              // get sections from the document
-              var sections = courseDocument['myEvents'];
-
-              // build list using names from sections
-              return ListView.builder(
-                itemCount: sections != null ? sections.length : 0,
-                itemBuilder: (_, int index) {
-                  //print(sections[index]);
-                  return buildListTile(sections[index]);
-                },
-              );
-            } else {
-              return Container();
-            }
-          }));
+        body: buildStream());
 //    return ListView(children: [
 //      Padding(
 //        padding: const EdgeInsets.all(8.0),
@@ -51,6 +26,35 @@ class CalendarPage extends StatelessWidget {
 //      CalendarEvent(),
 //      CalendarEvent(),
 //    ]);
+  }
+  StreamBuilder buildStream() {
+    Stream<DocumentSnapshot> courseDocStream = Firestore.instance
+        .collection('users')
+        .document(uid)
+        .snapshots();
+    return StreamBuilder<DocumentSnapshot>(
+        stream: courseDocStream,
+        builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          //if (snapshot.connectionState == ConnectionState.active) {
+          if (snapshot.hasData) {
+            // get course document
+            var courseDocument = snapshot.data.data;
+
+            // get sections from the document
+            var sections = courseDocument['myEvents'];
+
+            // build list using names from sections
+            return ListView.builder(
+              itemCount: sections != null ? sections.length : 0,
+              itemBuilder: (_, int index) {
+                //print(sections[index]);
+                return buildListTile(sections[index]);
+              },
+            );
+          } else {
+            return Container();
+          }
+        });
   }
   StreamBuilder buildListTile(String eventID) {
     return StreamBuilder(

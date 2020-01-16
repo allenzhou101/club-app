@@ -31,9 +31,9 @@ class UploadPage extends StatelessWidget {
 class UploadEvent extends StatefulWidget {
   UploadEventState createState() => UploadEventState();
 }
-String organizingGroup;
+String organizingGroup, category;
 class UploadEventState extends State<UploadEvent> {
-  String eventName, description, location, time, category;
+  String eventName, description, location, time;
   var organizingIndividuals = ['words', 'morewords'];
   var attendees = new Map<String, String>();
   final _formKey = GlobalKey<FormState>();
@@ -196,18 +196,7 @@ class UploadEventState extends State<UploadEvent> {
                           SnackBar(content: Text('Processing Data')));
                       _formKey.currentState.save();
 
-                      final db = Firestore.instance;
-                      var docID;
-                      final myEventDoc =
-                          Firestore.instance.collection("events").add({
-                        'eventName': eventName,
-                        'organizingGroup': organizingGroup,
-                        'organizingIndividuals': organizingIndividuals,
-                        'participatingIndividuals': [],
-                        'description': description,
-                        'location': location,
-                        'time': time,
-                      });
+                      addData();
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) {
                           return Home();
@@ -224,6 +213,23 @@ class UploadEventState extends State<UploadEvent> {
             ],
           ),
         ));
+  }
+  void addData() async{
+    final db = Firestore.instance;
+    final myEventDoc =
+    await db.collection("events").add({
+      'eventName': eventName,
+      'organizingGroup': organizingGroup,
+      'organizingIndividuals': organizingIndividuals,
+      'participatingIndividuals': [],
+      'description': description,
+      'location': location,
+      'time': time,
+      'category': category
+    });
+    db.collection("groups").document(organizingGroup).updateData({
+      'eventList': FieldValue.arrayUnion([myEventDoc.documentID])
+    });
   }
 }
 class BuildForm extends StatefulWidget {
@@ -318,7 +324,7 @@ class BuildCategoryForm extends StatefulWidget {
 }
 class BuildCategoryFormState extends State<BuildCategoryForm> {
   var _currentSelectedValue;
-  var categoryList = ["Tech", "Culture", "Sustainability"];
+  var categoryList = ["Technology", "Culture", "Sustainability"];
   var textStyle = TextStyle(color: Colors.blue, fontSize: 16.0);
 
   @override
@@ -363,7 +369,7 @@ class BuildCategoryFormState extends State<BuildCategoryForm> {
 
         onSaved: (value) {
 
-          organizingGroup = _currentSelectedValue;
+          category = _currentSelectedValue;
         }
 
     );

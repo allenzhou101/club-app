@@ -162,16 +162,16 @@ class CreateGroupState extends State<CreateGroup> {
                       final db = Firestore.instance;
 
                       var map = {
-                        'groupName': groupName,
                         'description': description,
                         'location': location,
                         'category': category,
                         'interests': interests,
                         'eventList': [],
+                        'groupAdmin': [uid],
                         'members': []
                       };
 
-                      createOrderMessage(map);
+                      createOrderMessage(groupName, map);
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) {
                           return ProfilePage();
@@ -189,11 +189,10 @@ class CreateGroupState extends State<CreateGroup> {
           ),
         ));
   }
-  void  createOrderMessage(map) async {
-    final order = await Firestore.instance.collection('groups').add(map);
-    var docID = order.documentID;
+  void  createOrderMessage(groupName, map) async {
+    final order = await Firestore.instance.collection('groups').document(groupName).setData(map);
     Firestore.instance.collection("users").document(uid).updateData({
-      'groupAdmin': FieldValue.arrayUnion([docID])
+      'groupAdmin': FieldValue.arrayUnion([groupName])
     });
   }
 }

@@ -161,7 +161,7 @@ class Organizer extends StatefulWidget {
         child: Text(widget.organizingGroup),
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context){
-            return OrgPage(orgID: widget.groupID);
+            return OrgPage(orgID: widget.organizingGroup);
           }));
         },
       )

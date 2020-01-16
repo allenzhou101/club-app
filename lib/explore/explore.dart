@@ -61,7 +61,7 @@ class EventRow extends StatelessWidget {
                           if (ds['category'] == category ||
                               category == 'Popular Now') {
                             return EventCard(
-                                docID: ds.documentID,name: ds["eventName"], date: ds["time"], location: ds['location'], description: ds['description'], organizingGroup: ds['organizingGroup']
+                                docID: ds.documentID, name: ds["eventName"], date: ds["time"], location: ds['location'], description: ds['description'], organizingGroup: ds['organizingGroup']
                             );
                             //, location: ds['location'], description: ds['description'], organizingGroup: ds['organizingGroup'], organizingIndividuals: ds['organizingIndividuals'], participatingIndividuals: ds['participatingIndividuals']
                           }

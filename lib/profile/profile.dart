@@ -206,56 +206,58 @@ class MyGroupsState extends State<MyGroups> {
     });
     for (var i = 0; i < adminList.length; i++) {
       await list.add(
-        StreamBuilder(
-          stream: Firestore.instance.collection('groups').document(adminList[i]).snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              var ds = snapshot.data;
-              return Container(
-                  width: 200,
-                  child: GestureDetector(
-                    child: Text(ds['groupName'].toString()),
-                    onTap: () {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) {
-                            return OrgPage(orgID: adminList[i]);
-                          }));
-                    },
-                  )
-              );
-            }
-            else {
-              return Text("Loading");
-            }
-          }
-        )
+          Text(adminList[i])
+//        StreamBuilder(
+//          stream: Firestore.instance.collection('groups').document(adminList[i]).snapshots(),
+//          builder: (context, snapshot) {
+//            if (snapshot.hasData) {
+//              var ds = snapshot.data;
+//              return Container(
+//                  width: 200,
+//                  child: GestureDetector(
+//                    child: Text(ds['groupName'].toString()),
+//                    onTap: () {
+//                      Navigator.of(context).push(
+//                          MaterialPageRoute(builder: (context) {
+//                            return OrgPage(orgID: adminList[i]);
+//                          }));
+//                    },
+//                  )
+//              );
+//            }
+//            else {
+//              return Text("Loading");
+//            }
+//          }
+//        )
       );
     }
     for (var i = 0; i < myGroups.length; i++) {
       await list.add(
-          StreamBuilder(
-              stream: Firestore.instance.collection('groups').document(myGroups[i]).snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  var ds = snapshot.data;
-                  return Container(
-                      width: 200,
-                      child: GestureDetector(
-                        child: Text(ds['groupName'].toString()),
-                        onTap: () {
-                          Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) {
-                                return OrgPage(orgID: adminList[i]);
-                              }));
-                        },
-                      )
-                  );
-                }
-                else {
-                  return Text("Loading");
-                }
-              }
-          )
+//          StreamBuilder(
+//              stream: Firestore.instance.collection('groups').document(myGroups[i]).snapshots(),
+//              builder: (context, snapshot) {
+//                if (snapshot.hasData) {
+//                  var ds = snapshot.data;
+//                  return Container(
+//                      width: 200,
+//                      child: GestureDetector(
+//                        child: Text(ds['groupName'].toString()),
+//                        onTap: () {
+//                          Navigator.of(context).push(
+//                              MaterialPageRoute(builder: (context) {
+//                                return OrgPage(orgID: adminList[i]);
+//                              }));
+//                        },
+//                      )
+//                  );
+//                }
+//                else {
+//                  return Text("Loading");
+//                }
+//              }
+//          )
+      Text(myGroups[i])
       );
     }
       if (list == null || list == []) {
