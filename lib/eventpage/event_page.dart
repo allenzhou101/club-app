@@ -35,9 +35,29 @@ class EventInner extends StatefulWidget {
 }
 
 class EventInnerState extends State<EventInner> {
+  int difference = 0;
+  void _incrementCounter() {
+    setState(() {
+      // This call to setState tells the Flutter framework that something has
+      // changed in this State, which causes it to rerun the build method below
+      // so that the display can reflect the updated values. If we changed
+      // _counter without calling setState(), then the build method would not be
+      // called again, and so nothing would appear to happen.
+      difference++;
+    });
+  }
+  void _decrementCounter() {
+    setState(() {
+      // This call to setState tells the Flutter framework that something has
+      // changed in this State, which causes it to rerun the build method below
+      // so that the display can reflect the updated values. If we changed
+      // _counter without calling setState(), then the build method would not be
+      // called again, and so nothing would appear to happen.
+      difference--;
+    });
+  }
 
   Future<void> yourGoing(String eventName, date) async {
-
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -64,23 +84,70 @@ class EventInnerState extends State<EventInner> {
       },
     );
   }
+
   @override
   Widget build(BuildContext context) {
+    int numPeople = widget.participatingIndividuals.length;
+
     return Scaffold(
         bottomNavigationBar: Padding(
           padding: EdgeInsets.all(8.0),
-          child: RaisedButton(
-            onPressed: () {
+          child: StreamBuilder(
+              stream:
+              Firestore.instance.collection('users').document(uid).snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  var ds = snapshot.data;
+//            List<String> adminList = new List<String>.from(ds['groupAdmin']);
+                  List<String> myEvents = new List<String>.from(ds['myEvents']);
+                  for (var j = 0; j < myEvents.length; j++) {
+                    if (myEvents[j] == widget.docID) {
+                      return RaisedButton(
+                          color: Colors.grey,
+                          //textColor: Colors.white,
+                          child: Text("Unregister"),
+                          onPressed: () {
+                            Firestore.instance.collection("users")
+                                .document(uid)
+                                .updateData({
+                              'myEvents': FieldValue.arrayRemove([widget.docID])
+                            });
+                            Firestore.instance.collection("events").document(
+                                widget.docID).updateData({
+                              'participatingIndividuals': FieldValue.arrayRemove([uid])
+                            });
+                            setState(() {
+                              _decrementCounter();
+                            });
+                            //yourGoing(widget.name, widget.date);
+                          });
+                      //setState(() => pressAttention = !pressAttention);
 
-              Firestore.instance.collection("users").document(uid).updateData({
-                'myEvents': FieldValue.arrayUnion([widget.docID])
-              });
-              yourGoing(widget.name, widget.date);
-            },
-            color: Colors.deepOrange,
-            textColor: Colors.white,
-            child: Text('Register'),
-          ),
+                    }
+                  }
+
+                  return RaisedButton(
+                      color: Colors.deepOrange,
+                      //textColor: Colors.white,
+                      child: Text("Register"),
+                      onPressed: () {
+                        Firestore.instance.collection("users")
+                            .document(uid)
+                            .updateData({
+                          'myEvents': FieldValue.arrayUnion([widget.docID])
+                        });
+                        Firestore.instance.collection("events").document(
+                            widget.docID).updateData({
+                          'participatingIndividuals': FieldValue.arrayUnion([uid])
+                        });
+                        setState(() {
+                          _incrementCounter();
+                        });
+                        yourGoing(widget.name, widget.date);
+                      });
+                }
+                return Text("Loading...");
+              }),
         ),
         appBar: AppBar(
           leading: new IconButton(
@@ -107,7 +174,7 @@ class EventInnerState extends State<EventInner> {
                       SizedBox(height: 20),
                       HostedBy(widget.organizingIndividuals),
                       SizedBox(height: 20),
-                      PeopleGoing(numPeople: widget.participatingIndividuals.length),
+                      PeopleGoing(numPeople: numPeople + difference),
                       SizedBox(height: 20),
                       About(widget.description),
                       SizedBox(height: 20),
@@ -283,39 +350,45 @@ class PeopleGoing extends StatelessWidget {
   PeopleGoing({this.numPeople});
   @override
   Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(numPeople.toString() + " people are going"),
-      SizedBox(height: 10),
-      SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(mainAxisSize: MainAxisSize.min, children: [
-            CircleImage(iconUrl: 'http://via.placeholder.com/350x150'),
-            SizedBox(width: 20),
-            CircleImage(iconUrl: 'http://via.placeholder.com/350x150'),
-            SizedBox(width: 20),
-            CircleImage(iconUrl: 'http://via.placeholder.com/350x150'),
-            SizedBox(width: 20),
-            CircleImage(iconUrl: 'http://via.placeholder.com/350x150'),
-            SizedBox(width: 20),
-            CircleImage(iconUrl: 'http://via.placeholder.com/350x150'),
-            SizedBox(width: 20),
-            CircleImage(iconUrl: 'http://via.placeholder.com/350x150'),
-            SizedBox(width: 20),
-            CircleImage(iconUrl: 'http://via.placeholder.com/350x150'),
-            SizedBox(width: 20),
-            CircleImage(iconUrl: 'http://via.placeholder.com/350x150'),
-            SizedBox(width: 20),
-            CircleImage(iconUrl: 'http://via.placeholder.com/350x150'),
-            SizedBox(width: 20),
-            CircleImage(iconUrl: 'http://via.placeholder.com/350x150'),
-            SizedBox(width: 20),
-            Icon(
-              Icons.arrow_forward,
-              color: Colors.black,
-              size: 30.0,
-            )
-          ]))
-    ]);
+    if (numPeople != 1) {
+      return Text(numPeople.toString() + " people are going");
+  }
+    else {
+      return Text(numPeople.toString() + " person is going");
+    }
+//    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+//      Text(numPeople.toString() + " people are going"),
+//      SizedBox(height: 10),
+//      SingleChildScrollView(
+//          scrollDirection: Axis.horizontal,
+//          child: Row(mainAxisSize: MainAxisSize.min, children: [
+//            CircleImage(iconUrl: 'http://via.placeholder.com/350x150'),
+//            SizedBox(width: 20),
+//            CircleImage(iconUrl: 'http://via.placeholder.com/350x150'),
+//            SizedBox(width: 20),
+//            CircleImage(iconUrl: 'http://via.placeholder.com/350x150'),
+//            SizedBox(width: 20),
+//            CircleImage(iconUrl: 'http://via.placeholder.com/350x150'),
+//            SizedBox(width: 20),
+//            CircleImage(iconUrl: 'http://via.placeholder.com/350x150'),
+//            SizedBox(width: 20),
+//            CircleImage(iconUrl: 'http://via.placeholder.com/350x150'),
+//            SizedBox(width: 20),
+//            CircleImage(iconUrl: 'http://via.placeholder.com/350x150'),
+//            SizedBox(width: 20),
+//            CircleImage(iconUrl: 'http://via.placeholder.com/350x150'),
+//            SizedBox(width: 20),
+//            CircleImage(iconUrl: 'http://via.placeholder.com/350x150'),
+//            SizedBox(width: 20),
+//            CircleImage(iconUrl: 'http://via.placeholder.com/350x150'),
+//            SizedBox(width: 20),
+//            Icon(
+//              Icons.arrow_forward,
+//              color: Colors.black,
+//              size: 30.0,
+//            )
+//          ]))
+//    ]);
   }
 }
 

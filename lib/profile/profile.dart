@@ -139,10 +139,10 @@ class MyBio extends StatelessWidget {
 
          ],
         ),
-        IconButton(
-            icon: Icon(Icons.edit),
-          onPressed: (){}
-        )
+//        IconButton(
+//            icon: Icon(Icons.edit),
+//          onPressed: (){}
+//        )
       ],
     );
   }

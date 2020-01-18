@@ -49,7 +49,6 @@ class OrgPageState extends State<OrgPage> {
 
 }
 StreamBuilder joinGroup(orgID) {
-  print(orgID);
   return StreamBuilder(
       stream:
       Firestore.instance.collection('users').document(uid).snapshots(),
