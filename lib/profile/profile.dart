@@ -127,7 +127,7 @@ class MyBio extends StatelessWidget {
          children: <Widget>[
            Text(name.toString()),
            Text(email.toString()),
-           Text("A short description"),
+           //Text("A short description"),
            RaisedButton(
              child: Text("Sign Out"),
              onPressed: () {

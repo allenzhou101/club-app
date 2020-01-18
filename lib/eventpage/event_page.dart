@@ -30,7 +30,8 @@ class EventInner extends StatefulWidget {
   @override
   EventInnerState createState() => EventInnerState();
   final String docID, name, date, location, description, organizingGroup;
-  EventInner({Key key, this.docID, this.name: "", this.date: "", this.location, this.description, this.organizingGroup}): super(key: key);
+  final List<String> organizingIndividuals, participatingIndividuals;
+  EventInner({Key key, this.docID, this.name: "", this.date: "", this.location, this.description, this.organizingGroup, this.organizingIndividuals, this.participatingIndividuals}): super(key: key);
 }
 
 class EventInnerState extends State<EventInner> {
@@ -55,9 +56,7 @@ class EventInnerState extends State<EventInner> {
             FlatButton(
               child: Text('okay'),
               onPressed: () {
-
                   Navigator.of(context).pop();
-
               },
             ),
           ],
@@ -106,14 +105,16 @@ class EventInnerState extends State<EventInner> {
                       SizedBox(height: 20),
                       Location(widget.location),
                       SizedBox(height: 20),
-                      PeopleGoing(numPeople: 14),
+                      HostedBy(widget.organizingIndividuals),
+                      SizedBox(height: 20),
+                      PeopleGoing(numPeople: widget.participatingIndividuals.length),
                       SizedBox(height: 20),
                       About(widget.description),
                       SizedBox(height: 20),
-                      Contact(),
-                      SizedBox(height: 20),
-                      Comments(),
-                      SizedBox(height: 20),
+//                      Contact(),
+//                      SizedBox(height: 20),
+//                      Comments(),
+//                      SizedBox(height: 20),
                     ]))));
   }
 }
@@ -167,9 +168,7 @@ class Organizer extends StatefulWidget {
       )
     ),
       SizedBox(width: 20),
-      RaisedButton(child: Text("Follow"), onPressed: () {
-
-      }),
+      joinGroup(widget.organizingGroup),
     ]);
   }
 }
@@ -181,7 +180,7 @@ class Date extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconPlusData(
-        icon: "http://via.placeholder.com/350x150", data: date);
+        icon: Icons.access_time, data: date);
   }
 }
 
@@ -191,9 +190,93 @@ class Location extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconPlusData(
-        icon: "http://via.placeholder.com/350x150", data: location);
+        icon: Icons.location_on, data: location);
   }
+
 }
+class HostedBy extends StatefulWidget {
+  HostedBy(this.hosts);
+  final List<String> hosts;
+  HostedByState createState() => HostedByState();
+}
+class HostedByState extends State<HostedBy>{
+
+
+  Future<Widget> buildList() async {
+    List<Widget> list = [Text("Hosted by: ")];
+    for (var i = 0; i < widget.hosts.length; i++) {
+      if (i == 0) {
+        await Firestore.instance.collection("users").document(widget.hosts[i]).get().then((
+            snapshot) {
+          if (snapshot.exists) {
+            print('helo');
+            print(snapshot.data['name'].toString());
+            list.add(
+                Text(snapshot.data['name'].toString())
+            );
+          }
+          else {
+            print("No such user");
+          }
+        });
+      }
+      else {
+        await Firestore.instance.collection("users").document(widget.hosts[i]).get().then((
+            snapshot) {
+          if (snapshot.exists) {
+            list.add(
+                Text(snapshot.data['name'].toString())
+            );
+          }
+          else {
+            print("No such user");
+          }
+        });
+      }
+    }
+    return Row(children:list);
+  }
+  Widget buildGroupList = Column(children: <Widget>[Text("No groups")],);
+
+  MyGroupsState() {
+    buildList().then((val) =>
+        setState(() {
+          buildGroupList = val;
+        }));
+  }
+    @override
+    Widget build(BuildContext context) {
+      buildList;
+      return buildGroupList;
+    }
+
+//    return StreamBuilder(
+//        stream: Firestore.instance.collection("users").snapshots(),
+//        builder: (context, snapshot) {
+//          if (snapshot.hasData) {
+//            for (var i = 0; i < hosts.length; i++) {
+//              if (i == 0) {
+//                list.add(
+//                    Text(snapshot.data.documents.map()[name])
+//                );
+//              }
+//              else {
+//                list.add(
+//                    Text(", " + hosts[i])
+//                );
+//              }
+//            }
+//
+//            return Row(
+//                children: list
+//            );
+//          }
+//          else return Text("Loading");
+//        }
+//    );
+  }
+
+
 
 class PeopleGoing extends StatelessWidget {
   final int numPeople;
@@ -245,7 +328,7 @@ class About extends StatelessWidget {
       Text("About", style: Theme.of(context).textTheme.title),
       Text(description),
       //Text("Here are some words describing what the event is about. Here are some words describing what the event is about. Here are some words describing what the event is about. "),
-      Text("\nread more", style: TextStyle(color: Colors.deepOrange))
+      //Text("\nread more", style: TextStyle(color: Colors.deepOrange))
     ]);
   }
 }
@@ -257,9 +340,9 @@ class Contact extends StatelessWidget {
       Text("Contact", style: Theme.of(context).textTheme.title),
       SizedBox(height: 10),
       IconPlusData(
-          icon: "http://via.placeholder.com/350x150", data: "Doub's Life"),
+          icon: Icons.email, data: "Doub's Life"),
       IconPlusData(
-          icon: "http://via.placeholder.com/350x150", data: "Doug@gmail.com")
+          icon: Icons.email, data: "Doug@gmail.com")
     ]);
   }
 }
@@ -358,12 +441,19 @@ class PastCommentData extends StatelessWidget {
 }
 
 class IconPlusData extends StatelessWidget {
-  final String icon, data;
+  final String data;
+  final IconData icon;
   IconPlusData({this.icon, this.data});
   @override
   Widget build(BuildContext context) {
     return Row(children: [
-      CircleImage(iconUrl: icon),
+      //CircleImage(iconUrl: icon),
+      Icon(
+        icon,
+        color: Colors.grey,
+        size: 24.0,
+        semanticLabel: 'Text to announce in accessibility modes',
+      ),
       SizedBox(width: 10),
       Text(data, style: Theme.of(context).textTheme.body1)
 
@@ -383,6 +473,7 @@ class CircleImage extends StatelessWidget {
           decoration: new BoxDecoration(
               shape: BoxShape.circle,
               image: new DecorationImage(
-                  fit: BoxFit.cover, image: new NetworkImage(iconUrl))));
+                  fit: BoxFit.cover, image: new NetworkImage(iconUrl)))
+    );
   }
 }

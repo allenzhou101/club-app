@@ -35,7 +35,7 @@ class OrgPageState extends State<OrgPage> {
               child: ListView(
             children: <Widget>[
               Text(widget.orgID),
-              //followButton(),
+              joinGroup(widget.orgID),
               Members(memberCount: ds['members'].length),
               About(description: ds['description']),
               Events(eventList: eventList)
@@ -46,28 +46,65 @@ class OrgPageState extends State<OrgPage> {
     ));
   }
 
-  StreamBuilder followButton() {
-    new StreamBuilder(
-        stream:
-            Firestore.instance.collection('users').document(uid).snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Text(snapshot.data['name']);
-          }
-          return Text("Loading");
 
-//          return RaisedButton(
-//            color: Colors.blue,
-//            child: Text("Join this group"),
-//            onPressed: () {
-//              userDocument.updateData({
-//                'members': FieldValue.arrayUnion([widget.orgID])
-//              });
-//              //setState(() => pressAttention = !pressAttention);
-//            },
-//          );
-        });
-  }
+}
+StreamBuilder joinGroup(orgID) {
+  print(orgID);
+  return StreamBuilder(
+      stream:
+      Firestore.instance.collection('users').document(uid).snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          var ds = snapshot.data;
+          List<String> adminList = new List<String>.from(ds['groupAdmin']);
+          List<String> myGroups = new List<String>.from(ds['myGroups']);
+          for (var i = 0; i < adminList.length; i ++) {
+            if (adminList[i] == orgID) {
+              return Container(
+                width: 150,
+                child: Text("You are an administrator of this group")
+              );
+            }
+          }
+          for (var j = 0; j < myGroups.length; j++) {
+            if (myGroups[j] == orgID) {
+              return RaisedButton(
+                color: Colors.grey,
+                child: Text("Leave this group"),
+                onPressed: () {
+                  Firestore.instance.collection("groups").document(orgID).updateData({
+                    'members': FieldValue.arrayRemove([uid])
+                  });
+                  Firestore.instance.collection("users").document(uid).updateData({
+                    'myGroups': FieldValue.arrayRemove([orgID])
+
+                  });
+                  //setState(() => pressAttention = !pressAttention);
+                },
+              );
+            }
+          }
+
+          return RaisedButton(
+            color: Colors.blue,
+            child: Text("Join this group"),
+            onPressed: () {
+              Firestore.instance.collection("groups").document(orgID).updateData({
+                'members': FieldValue.arrayUnion([uid])
+              });
+              Firestore.instance.collection("users").document(uid).updateData({
+                'myGroups': FieldValue.arrayUnion([orgID])
+
+              });
+              //setState(() => pressAttention = !pressAttention);
+            },
+          );
+        }
+        return Text("Loading...");
+
+
+
+      });
 }
 
 class Members extends StatelessWidget {
