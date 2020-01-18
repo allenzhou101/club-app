@@ -168,7 +168,7 @@ class MyGroupsState extends State<MyGroups> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-    Text("Groups - 6"),
+    Text("My Groups"),
             GestureDetector(
               child: Text("Start New Group", style: TextStyle(color: Colors.blue)),
               onTap: () {
@@ -186,7 +186,7 @@ class MyGroupsState extends State<MyGroups> {
     );
   }
     Future<Widget> buildStreamList() async {
-    List<Widget> list = [Text("No groups yet")];
+    List<Widget> list = [];
     List<String> adminList = [];
     List<String> myGroups = [];
     await Firestore.instance.collection("users").document(uid).get().then((DocumentSnapshot ds) {
@@ -194,71 +194,90 @@ class MyGroupsState extends State<MyGroups> {
         return Text("Nothing here to see");
       }
       else {
-        if (ds['groupAdmin'] != null && ds['groupAdmin'].length > 0) {
-          adminList = new List<String>.from(ds['groupAdmin']);
-          list = [];
-        }
-        if (ds['myGroups'] != null && ds['myGroups'] > 0) {
-          myGroups = new List<String>.from(ds['myGroups']);
-          list = [];
-        }
+        adminList = new List<String>.from(ds['groupAdmin']);
+        myGroups = new List<String>.from(ds['myGroups']);
       }
     });
     for (var i = 0; i < adminList.length; i++) {
       await list.add(
-          Text(adminList[i])
-//        StreamBuilder(
-//          stream: Firestore.instance.collection('groups').document(adminList[i]).snapshots(),
-//          builder: (context, snapshot) {
-//            if (snapshot.hasData) {
-//              var ds = snapshot.data;
-//              return Container(
-//                  width: 200,
-//                  child: GestureDetector(
-//                    child: Text(ds['groupName'].toString()),
-//                    onTap: () {
-//                      Navigator.of(context).push(
-//                          MaterialPageRoute(builder: (context) {
-//                            return OrgPage(orgID: adminList[i]);
-//                          }));
-//                    },
-//                  )
-//              );
-//            }
-//            else {
-//              return Text("Loading");
-//            }
-//          }
-//        )
+          StreamBuilder(
+              stream: Firestore.instance.collection('groups').document(adminList[i]).snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  var ds = snapshot.data;
+                  return InkWell(
+                    child: Row(
+                      children: <Widget>[
+                        Image.network(
+                            'https://picsum.photos/250?image=9',
+                            height: 50
+                        ),
+                        SizedBox(
+                            width: 40
+                        ),
+                        Column(
+                          children: <Widget>[
+                            Text(adminList[i]),
+                            Text(ds['members'].length.toString())
+                          ],
+                        )
+                      ],
+                    ),
+                    onTap: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) {
+                            return OrgPage(orgID: adminList[i]);
+                          }));
+                    },
+                  );
+                }
+                else {
+                  return Text("Loading");
+                }
+              }
+          )
       );
+
     }
     for (var i = 0; i < myGroups.length; i++) {
-      await list.add(
-//          StreamBuilder(
-//              stream: Firestore.instance.collection('groups').document(myGroups[i]).snapshots(),
-//              builder: (context, snapshot) {
-//                if (snapshot.hasData) {
-//                  var ds = snapshot.data;
-//                  return Container(
-//                      width: 200,
-//                      child: GestureDetector(
-//                        child: Text(ds['groupName'].toString()),
-//                        onTap: () {
-//                          Navigator.of(context).push(
-//                              MaterialPageRoute(builder: (context) {
-//                                return OrgPage(orgID: adminList[i]);
-//                              }));
-//                        },
-//                      )
-//                  );
-//                }
-//                else {
-//                  return Text("Loading");
-//                }
-//              }
-//          )
-      Text(myGroups[i])
+      await list.add(StreamBuilder(
+          stream: Firestore.instance.collection('groups').document(adminList[i]).snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              var ds = snapshot.data;
+              return InkWell(
+                child: Row(
+                  children: <Widget>[
+                    Image.network(
+                        'https://picsum.photos/250?image=9',
+                        height: 50
+                    ),
+                    SizedBox(
+                        width: 40
+                    ),
+                    Column(
+                      children: <Widget>[
+                        Text(myGroups[i]),
+                        Text(ds['members'].length.toString())
+                      ],
+                    )
+                  ],
+                ),
+                onTap: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) {
+                        return OrgPage(orgID: myGroups[i]);
+                      }));
+                },
+              );
+            }
+            else {
+              return Text("Loading");
+            }
+          }
+      )
       );
+
     }
       if (list == null || list == []) {
         return Text("Loading");

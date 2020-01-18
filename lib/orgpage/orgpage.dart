@@ -16,6 +16,9 @@ class OrgPageState extends State<OrgPage> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Org Page")
+      ),
         body: StreamBuilder(
       stream: Firestore.instance
           .collection('groups')
@@ -32,7 +35,7 @@ class OrgPageState extends State<OrgPage> {
               child: ListView(
             children: <Widget>[
               Text(widget.orgID),
-              followButton(),
+              //followButton(),
               Members(memberCount: ds['members'].length),
               About(description: ds['description']),
               Events(eventList: eventList)
