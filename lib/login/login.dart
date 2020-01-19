@@ -31,7 +31,8 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              FlutterLogo(size: 150),
+              //FlutterLogo(size: 150),
+              Text("CLUB APP", style: TextStyle(fontSize: 80, color: Colors.white)),
               SizedBox(height: 50),
               _signInButton(),
             ],
@@ -41,7 +42,11 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
   Widget _signInButton() {
-    return OutlineButton(
+    return Container(
+        decoration: BoxDecoration(
+        color: Colors.white,
+    ),
+    child: OutlineButton(
       splashColor: Colors.grey,
       onPressed: () {
         signInWithGoogle().whenComplete(() {
@@ -59,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
           );
         });
       },
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       highlightElevation: 0,
       borderSide: BorderSide(color: Colors.white),
       child: Padding(
@@ -68,20 +73,31 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Image(image: AssetImage("assets/images/google_logo.png"), height: 35.0),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(8),
+                child: Image(image: AssetImage("assets/images/google_logo.png"), height: 25.0)
+              ),
+            ),
+
+            SizedBox(width: 20),
             Padding(
               padding: const EdgeInsets.only(left: 10),
               child: Text(
                 'Sign in with Google',
                 style: TextStyle(
                   fontSize: 20,
-                  color: Colors.white,
+                  color: Colors.deepOrange,
                 ),
               ),
             )
           ],
         ),
       ),
+    )
     );
   }
 }

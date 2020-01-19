@@ -199,7 +199,7 @@ class MyGroupsState extends State<MyGroups> {
       }
     });
     for (var i = 0; i < adminList.length; i++) {
-      await list.add(
+      list.add(
           StreamBuilder(
               stream: Firestore.instance.collection('groups').document(adminList[i]).snapshots(),
               builder: (context, snapshot) {
@@ -240,7 +240,7 @@ class MyGroupsState extends State<MyGroups> {
 
     }
     for (var i = 0; i < myGroups.length; i++) {
-      await list.add(StreamBuilder(
+      list.add(StreamBuilder(
           stream: Firestore.instance.collection('groups').document(adminList[i]).snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
