@@ -13,23 +13,28 @@ import 'login/interests.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'orgpage/orgpage.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primaryColor: Colors.deepOrange,
-        primarySwatch: Colors.deepOrange,
-        textTheme: TextTheme(
-        headline: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-    title: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-    body1: TextStyle(fontSize: 18)
-      )),
+          primaryColor: Colors.deepOrange,
+          primarySwatch: Colors.deepOrange,
+          textTheme:
+          Theme.of(context).textTheme.apply(
+              fontFamily: 'Open Sans')
+//          TextTheme(
+//              headline: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+//              title: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+//              body1: TextStyle(fontSize: 18)
+//          ),
+
+      ),
       home: LoginPage(),
 //        Scaffold( Center(
 //          child: Column(
@@ -49,7 +54,7 @@ class MyApp extends StatelessWidget {
 //            ],
 //          ),
 //        ),
-     // ),
+      // ),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -84,7 +89,7 @@ class _HomeState extends State<Home> {
       //appBar: AppBar(title: Text('Explore UT Clubs')),
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
+          type: BottomNavigationBarType.fixed,
           onTap: onTabTapped,
           currentIndex: _currentIndex,
           items: [
@@ -116,6 +121,3 @@ class _HomeState extends State<Home> {
 //    context,
 //    MaterialPageRoute(builder: (context) => SecondRoute())
 }
-
-
-
