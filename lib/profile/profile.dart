@@ -63,7 +63,10 @@ final databaseReference = Firestore.instance;
 int interestCount;
 void createUserRecord() async {
   await databaseReference.collection("users").document(uid).setData({
-    'name': name
+    'name': name,
+    'myEvents': [],
+    'myGroups': [],
+    'groupAdmin': []
   });
 //
 //  Firestore.instance
@@ -198,6 +201,7 @@ class MyGroupsState extends State<MyGroups> {
         myGroups = new List<String>.from(ds['myGroups']);
       }
     });
+    print("length" + adminList.length.toString());
     for (var i = 0; i < adminList.length; i++) {
       list.add(
           StreamBuilder(

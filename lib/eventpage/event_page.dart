@@ -267,8 +267,6 @@ class HostedBy extends StatefulWidget {
   HostedByState createState() => HostedByState();
 }
 class HostedByState extends State<HostedBy>{
-
-
   Future<Widget> buildList() async {
     List<Widget> list = [Text("Hosted by: ")];
     for (var i = 0; i < widget.hosts.length; i++) {
@@ -276,8 +274,6 @@ class HostedByState extends State<HostedBy>{
         await Firestore.instance.collection("users").document(widget.hosts[i]).get().then((
             snapshot) {
           if (snapshot.exists) {
-            print('helo');
-            print(snapshot.data['name'].toString());
             list.add(
                 Text(snapshot.data['name'].toString())
             );
@@ -316,31 +312,6 @@ class HostedByState extends State<HostedBy>{
       buildList;
       return buildGroupList;
     }
-
-//    return StreamBuilder(
-//        stream: Firestore.instance.collection("users").snapshots(),
-//        builder: (context, snapshot) {
-//          if (snapshot.hasData) {
-//            for (var i = 0; i < hosts.length; i++) {
-//              if (i == 0) {
-//                list.add(
-//                    Text(snapshot.data.documents.map()[name])
-//                );
-//              }
-//              else {
-//                list.add(
-//                    Text(", " + hosts[i])
-//                );
-//              }
-//            }
-//
-//            return Row(
-//                children: list
-//            );
-//          }
-//          else return Text("Loading");
-//        }
-//    );
   }
 
 

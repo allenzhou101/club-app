@@ -32,6 +32,7 @@ class UploadEvent extends StatefulWidget {
   UploadEventState createState() => UploadEventState();
 }
 String organizingGroup, category;
+bool notAdmin = false;
 class UploadEventState extends State<UploadEvent> {
   String eventName, description, location, time;
   var organizingIndividuals = ['words', 'morewords'];
@@ -89,57 +90,62 @@ class UploadEventState extends State<UploadEvent> {
     var _currentSelectedValue;
     var categoryList = ["Tech", "Culture", "Sustainability"];
     var textStyle = TextStyle(color: Colors.blue, fontSize: 16.0);
-    return Form(
-        key: _formKey,
-        child: Padding(
-          padding: EdgeInsets.only(
-            right: 80,
-            left: 80,
-          ),
-          child: ListView(
-            children: <Widget>[
+//    if (notAdmin) {
+//      return Text("You are not an administrator of any groups");
+//    }
+//    else {
+      return Form(
+          key: _formKey,
+          child: Padding(
+            padding: EdgeInsets.only(
+              right: 80,
+              left: 80,
+            ),
+            child: ListView(
+              children: <Widget>[
 //
 
-              TextFormField(
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter some text';
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(labelText: 'Event Name'),
-                onSaved: (value) => eventName = value,
-              ),
-              InkWell(
-                onTap: () {
-                  _selectDateAndTime(
-                      context); // Call Function that has showDatePicker()
-                },
-                child: IgnorePointer(
-                  child: new TextFormField(
-                    controller: textController,
+                TextFormField(
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(labelText: 'Event Name'),
+                  onSaved: (value) => eventName = value,
+                ),
+                InkWell(
+                  onTap: () {
+                    _selectDateAndTime(
+                        context); // Call Function that has showDatePicker()
+                  },
+                  child: IgnorePointer(
+                    child: new TextFormField(
+                      controller: textController,
 
-                    decoration: new InputDecoration(hintText: 'Date and Time'),
-                    //maxLength: 10,
-                    // validator: validateDob,
-                    onSaved: (String val) {
-                      time = "${selectedDate.toLocal()}".split(' ')[0] +
-                          " " +
-                          selectedTime.toString().substring(10, 15);
-                    },
+                      decoration: new InputDecoration(
+                          hintText: 'Date and Time'),
+                      //maxLength: 10,
+                      // validator: validateDob,
+                      onSaved: (String val) {
+                        time = "${selectedDate.toLocal()}".split(' ')[0] +
+                            " " +
+                            selectedTime.toString().substring(10, 15);
+                      },
+                    ),
                   ),
                 ),
-              ),
-              TextFormField(
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter some text';
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(labelText: 'Location'),
-                onSaved: (value) => location = value,
-              ),
+                TextFormField(
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(labelText: 'Location'),
+                  onSaved: (value) => location = value,
+                ),
 
 //              TextFormField(
 //                validator: (value) {
@@ -151,69 +157,59 @@ class UploadEventState extends State<UploadEvent> {
 //                decoration: InputDecoration(labelText: 'Organizing Group'),
 //                onSaved: (value) => organizingGroup = uid,
 //              ),
+                BuildForm(),
+                TextFormField(
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                    return null;
+                  },
+                  decoration:
+                  InputDecoration(labelText: 'Organizing Individuals'),
+                  onSaved: (value) => organizingIndividuals = [uid],
+                ),
+                BuildCategoryForm(),
+                TextFormField(
+                  style: new TextStyle(color: Colors.black),
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(labelText: 'Description'),
+                  onSaved: (value) => description = value,
+                ),
+                RaisedButton(
+                    child: Text("Submit"),
+                    onPressed: () {
+                      if (_formKey.currentState.validate()) {
+                        // If the form is valid, display a Snackbar.
+                        Scaffold.of(context).showSnackBar(
+                            SnackBar(content: Text('Processing Data')));
+                        _formKey.currentState.save();
 
-
-              BuildForm(),
-
-
-
-
-
-              TextFormField(
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter some text';
-                  }
-                  return null;
-                },
-                decoration:
-                    InputDecoration(labelText: 'Organizing Individuals'),
-                onSaved: (value) => organizingIndividuals = [uid],
-              ),
-
-              BuildCategoryForm(),
-
-
-              TextFormField(
-                style: new TextStyle(color: Colors.black),
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter some text';
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(labelText: 'Description'),
-                onSaved: (value) => description = value,
-              ),
-              RaisedButton(
-                  child: Text("Submit"),
-                  onPressed: () {
-                    if (_formKey.currentState.validate()) {
-                      // If the form is valid, display a Snackbar.
-                      Scaffold.of(context).showSnackBar(
-                          SnackBar(content: Text('Processing Data')));
-                      _formKey.currentState.save();
-
-                      addData();
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) {
-                          return Home();
-                        },
-                      ));
+                        addData();
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) {
+                            return Home();
+                          },
+                        ));
 
 //                            .then((doc) {
 //                          docID = doc.documentID.toString();
 //                        });
-//
-
-                    }
-                  })
-            ],
-          ),
-        ));
+                      }
+                    })
+              ],
+            ),
+          ));
+    //}
   }
+
   void addData() async{
     final db = Firestore.instance;
     final myEventDoc =
@@ -253,6 +249,16 @@ class BuildFormState extends State<BuildForm>{
           DocumentSnapshot ds = snapshot.data;
 
           List<String> categoryList = new List<String>.from(ds['groupAdmin']);
+//          if (categoryList.length ==0) {
+//            setState(() {
+//              notAdmin = true;
+//            });
+//          }
+//          else {
+//            setState(() {
+//              notAdmin = false;
+//            });
+//          }
           return FormField<String>(
               validator: (value) {
                 if (value.isEmpty) {
@@ -366,12 +372,9 @@ class BuildCategoryFormState extends State<BuildCategoryForm> {
             ),
           );
         },
-
         onSaved: (value) {
-
           category = _currentSelectedValue;
         }
-
     );
   }
 }

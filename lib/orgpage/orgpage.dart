@@ -38,7 +38,7 @@ class OrgPageState extends State<OrgPage> {
               joinGroup(widget.orgID),
               Members(memberCount: ds['members'].length),
               About(description: ds['description']),
-              Events(eventList: eventList)
+              Events(eventList: eventList),
             ],
           ));
         }
@@ -50,8 +50,7 @@ class OrgPageState extends State<OrgPage> {
 }
 StreamBuilder joinGroup(orgID) {
   return StreamBuilder(
-      stream:
-      Firestore.instance.collection('users').document(uid).snapshots(),
+      stream: Firestore.instance.collection('users').document(uid).snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           var ds = snapshot.data;

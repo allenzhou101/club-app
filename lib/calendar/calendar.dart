@@ -42,7 +42,6 @@ class CalendarPage extends StatelessWidget {
 
             // get sections from the document
             var sections = courseDocument['myEvents'];
-
             // build list using names from sections
             return ListView.builder(
               itemCount: sections != null ? sections.length : 0,
