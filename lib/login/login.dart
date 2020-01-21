@@ -32,8 +32,10 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               //FlutterLogo(size: 150),
-              Text("CLUB APP", style: TextStyle(fontSize: 80, color: Colors.white)),
-              SizedBox(height: 50),
+              Text("CLUB APP", style: TextStyle(fontSize: 60, color: Colors.white)),
+              SizedBox(height: 20),
+              Text("The #1 way to build your community.", style: TextStyle(color: Colors.white, fontSize: 20),),
+              SizedBox(height: 200),
               _signInButton(),
             ],
           ),
@@ -42,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
   Widget _signInButton() {
-    return Container(
+    return Column(children: <Widget>[Container(
         decoration: BoxDecoration(
         color: Colors.white,
     ),
@@ -69,7 +71,9 @@ class _LoginPageState extends State<LoginPage> {
       borderSide: BorderSide(color: Colors.white),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-        child: Row(
+        child:
+
+        Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -83,11 +87,11 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
 
-            SizedBox(width: 20),
+            SizedBox(width: 10),
             Padding(
               padding: const EdgeInsets.only(left: 10),
               child: Text(
-                'Sign in with Google',
+                'Sign up with Google',
                 style: TextStyle(
                   fontSize: 20,
                   color: Colors.deepOrange,
@@ -96,9 +100,34 @@ class _LoginPageState extends State<LoginPage> {
             )
           ],
         ),
+
+
       ),
     )
-    );
+    ),
+      SizedBox(height: 5),
+      Row(mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[Text("Already have an account? Tap to ", style: TextStyle(color: Colors.white)),
+        GestureDetector(
+          child: Text("login!", style: TextStyle(color: Colors.yellow, decoration: TextDecoration.underline)),
+          onTap: () {
+            signInWithGoogle().whenComplete(() {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    if (interestBoolean) {
+                      return InterestPage();
+                    }
+                    else {
+                      return Home();
+                    }
+                  },
+                ),
+              );
+            });
+          },
+        )]
+      )],);
   }
 }
 
