@@ -83,7 +83,12 @@ void createUserRecord() async {
 //  });
 
 }
-class MyBio extends StatelessWidget {
+
+class MyBio extends StatefulWidget  {
+  MyBioState createState() => MyBioState();
+}
+
+class MyBioState extends State<MyBio>{
   //messing with the database
 //  void deleteData() {
 //    try {
@@ -130,16 +135,14 @@ class MyBio extends StatelessWidget {
          children: <Widget>[
            Text(name.toString()),
            Text(email.toString()),
-           //Text("A short description"),
            RaisedButton(
              child: Text("Sign Out"),
              onPressed: () {
                signOutGoogle();
-               Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) {return LoginPage();}), ModalRoute.withName('/'));
+               Navigator.of(context, rootNavigator: true).pushReplacement(MaterialPageRoute(builder: (context) => new LoginPage()));
+
              }
            ),
-//
-
          ],
         ),
 //        IconButton(

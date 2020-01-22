@@ -33,6 +33,9 @@ class UploadEvent extends StatefulWidget {
 }
 String organizingGroup, category;
 bool notAdmin = false;
+
+var textStyle = TextStyle(color: Colors.blue, fontSize: 16.0);
+
 class UploadEventState extends State<UploadEvent> {
   String eventName, description, location, time;
   var organizingIndividuals = ['words', 'morewords'];
@@ -94,58 +97,80 @@ class UploadEventState extends State<UploadEvent> {
 //      return Text("You are not an administrator of any groups");
 //    }
 //    else {
-      return Form(
-          key: _formKey,
-          child: Padding(
-            padding: EdgeInsets.only(
-              right: 80,
-              left: 80,
-            ),
-            child: ListView(
-              children: <Widget>[
+      return StreamBuilder(
+        stream: Firestore.instance.collection("users").document(uid).snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Text(
+              'No Data...',
+            );
+          } else {
+            DocumentSnapshot ds = snapshot.data;
+
+            List<String> categoryList = new List<String>.from(ds['groupAdmin']);
+            if (categoryList.length == 0) {
+              return Text("You're not an admin of any groups");
+            }
+            return FormField<String>(
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please enter some text';
+                  }
+                  return null;
+                },
+                builder: (FormFieldState<String> state) {
+                  return Form(
+                      key: _formKey,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          right: 80,
+                          left: 80,
+                        ),
+                        child: ListView(
+                          children: <Widget>[
 //
 
-                TextFormField(
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(labelText: 'Event Name'),
-                  onSaved: (value) => eventName = value,
-                ),
-                InkWell(
-                  onTap: () {
-                    _selectDateAndTime(
-                        context); // Call Function that has showDatePicker()
-                  },
-                  child: IgnorePointer(
-                    child: new TextFormField(
-                      controller: textController,
+                            TextFormField(
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'Please enter some text';
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(labelText: 'Event Name'),
+                              onSaved: (value) => eventName = value,
+                            ),
+                            InkWell(
+                              onTap: () {
+                                _selectDateAndTime(
+                                    context); // Call Function that has showDatePicker()
+                              },
+                              child: IgnorePointer(
+                                child: new TextFormField(
+                                  controller: textController,
 
-                      decoration: new InputDecoration(
-                          hintText: 'Date and Time'),
-                      //maxLength: 10,
-                      // validator: validateDob,
-                      onSaved: (String val) {
-                        time = "${selectedDate.toLocal()}".split(' ')[0] +
-                            " " +
-                            selectedTime.toString().substring(10, 15);
-                      },
-                    ),
-                  ),
-                ),
-                TextFormField(
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(labelText: 'Location'),
-                  onSaved: (value) => location = value,
-                ),
+                                  decoration: new InputDecoration(
+                                      hintText: 'Date and Time'),
+                                  //maxLength: 10,
+                                  // validator: validateDob,
+                                  onSaved: (String val) {
+                                    time = "${selectedDate.toLocal()}".split(' ')[0] +
+                                        " " +
+                                        selectedTime.toString().substring(10, 15);
+                                  },
+                                ),
+                              ),
+                            ),
+                            TextFormField(
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'Please enter some text';
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(labelText: 'Location'),
+                              onSaved: (value) => location = value,
+                            ),
 
 //              TextFormField(
 //                validator: (value) {
@@ -157,56 +182,93 @@ class UploadEventState extends State<UploadEvent> {
 //                decoration: InputDecoration(labelText: 'Organizing Group'),
 //                onSaved: (value) => organizingGroup = uid,
 //              ),
-                BuildForm(),
-                TextFormField(
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    return null;
-                  },
-                  decoration:
-                  InputDecoration(labelText: 'Organizing Individuals'),
-                  onSaved: (value) => organizingIndividuals = [uid],
-                ),
-                BuildCategoryForm(),
-                TextFormField(
-                  style: new TextStyle(color: Colors.black),
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(labelText: 'Description'),
-                  onSaved: (value) => description = value,
-                ),
-                RaisedButton(
-                    child: Text("Submit"),
-                    onPressed: () {
-                      if (_formKey.currentState.validate()) {
-                        // If the form is valid, display a Snackbar.
-                        Scaffold.of(context).showSnackBar(
-                            SnackBar(content: Text('Processing Data')));
-                        _formKey.currentState.save();
+                            InputDecorator(
+                              decoration: InputDecoration(
+                                  labelStyle: textStyle,
+                                  errorStyle: TextStyle(color: Colors.redAccent, fontSize: 16.0),
+                                  hintText: 'Please select hosting group',
+                                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
+                              isEmpty: _currentSelectedValue == null,
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  value: _currentSelectedValue,
+                                  isDense: true,
+                                  onChanged: (String newValue) {
+                                    setState(() {
+                                      _currentSelectedValue = newValue;
+                                      state.didChange(newValue);
+                                      //print(_currentSelectedValue);
+                                    });
 
-                        addData();
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) {
-                            return Home();
-                          },
-                        ));
+                                  },
+                                  items: categoryList.map((String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            ),
+                            TextFormField(
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'Please enter some text';
+                                }
+                                return null;
+                              },
+                              decoration:
+                              InputDecoration(labelText: 'Organizing Individuals'),
+                              onSaved: (value) => organizingIndividuals = [uid],
+                            ),
+                            BuildCategoryForm(),
+                            TextFormField(
+                              style: new TextStyle(color: Colors.black),
+                              keyboardType: TextInputType.multiline,
+                              maxLines: null,
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'Please enter some text';
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(labelText: 'Description'),
+                              onSaved: (value) => description = value,
+                            ),
+                            RaisedButton(
+                                child: Text("Submit"),
+                                onPressed: () {
+                                  if (_formKey.currentState.validate()) {
+                                    // If the form is valid, display a Snackbar.
+                                    Scaffold.of(context).showSnackBar(
+                                        SnackBar(content: Text('Processing Data')));
+                                    _formKey.currentState.save();
+
+                                    addData();
+                                    Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) {
+                                        return Home();
+                                      },
+                                    ));
 
 //                            .then((doc) {
 //                          docID = doc.documentID.toString();
 //                        });
-                      }
-                    })
-              ],
-            ),
-          ));
+                                  }
+                                })
+                          ],
+                        ),
+                      ));
+                },
+                onSaved: (value) {
+                  organizingGroup = _currentSelectedValue;
+                }
+
+            );
+          }
+        },
+      );
+
     //}
   }
 
@@ -228,101 +290,7 @@ class UploadEventState extends State<UploadEvent> {
     });
   }
 }
-class BuildForm extends StatefulWidget {
-  BuildFormState createState() => BuildFormState();
-}
-class BuildFormState extends State<BuildForm>{
-  var _currentSelectedValue;
 
-  var textStyle = TextStyle(color: Colors.blue, fontSize: 16.0);
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: Firestore.instance.collection("users").document(uid).snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return Text(
-            'No Data...',
-          );
-        } else {
-          DocumentSnapshot ds = snapshot.data;
-
-          List<String> categoryList = new List<String>.from(ds['groupAdmin']);
-//          if (categoryList.length ==0) {
-//            setState(() {
-//              notAdmin = true;
-//            });
-//          }
-//          else {
-//            setState(() {
-//              notAdmin = false;
-//            });
-//          }
-          return FormField<String>(
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please enter some text';
-                }
-                return null;
-              },
-              builder: (FormFieldState<String> state) {
-                return InputDecorator(
-                  decoration: InputDecoration(
-                      labelStyle: textStyle,
-                      errorStyle: TextStyle(color: Colors.redAccent, fontSize: 16.0),
-                      hintText: 'Please select hosting group',
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
-                  isEmpty: _currentSelectedValue == null,
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      value: _currentSelectedValue,
-                      isDense: true,
-                      onChanged: (String newValue) {
-                        setState(() {
-                          _currentSelectedValue = newValue;
-                          state.didChange(newValue);
-                          //print(_currentSelectedValue);
-                        });
-
-                      },
-                      items: categoryList.map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                );
-              },
-              onSaved: (value) {
-                organizingGroup = _currentSelectedValue;
-              }
-
-          );
-        }
-      },
-    );
-  }
-//  List<String> list;
-//  List<String>  buildGroupList(groupIDs)  {
-//    list = new List();
-//    for (int i = 0; i < groupIDs.length; i ++) {
-//      futureString(groupIDs, i);
-//    }
-//    print(list.toString());
-//    return list;
-//  }
-//  Future<String> futureString(groupIDs, i) async {
-//
-//    Firestore.instance.collection("groups").document(groupIDs[i]).get().then((DocumentSnapshot ds) {
-//      String name = ds.data["groupName"];
-//      list.add("" + name);
-//    });
-//    return "Hello";
-//  }
-}
 
 
 class BuildCategoryForm extends StatefulWidget {

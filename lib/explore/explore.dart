@@ -112,18 +112,38 @@ class EventCard extends StatelessWidget {
 
 class FeaturedCard extends StatelessWidget {
   final databaseReference = Firestore.instance;
-
-//databaseReference.collection("users")
-
   @override
   Widget build(BuildContext context) {
-    return Card(
-        child: Column(children: [
-      Image.asset('assets/images/canoe.jpg'),
-      ListTile(
-        title: Text('Concrete Canoe Club Meeting'),
-        subtitle: Text('Fri, Nov 29'),
-      )
-    ]));
+    return StreamBuilder(
+      stream: databaseReference.collection("events").document("BwUp07KTu46MgYjKVATX").snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Text("Loading...");
+        }
+        var ds = snapshot.data;
+        List<String> organizingIndividuals = List<String>.from(ds['organizingIndividuals']);
+        List<String> participatingIndividuals = List<String>.from(ds['participatingIndividuals']);
+
+        return GestureDetector(child:
+          Card(
+            child: Column(children: [
+              Image.asset('assets/images/canoe.jpg'),
+              ListTile(
+                title: Text(ds['eventName']),
+                subtitle: Text(ds['time']),
+              )
+            ])),
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) {
+
+                return EventInner(
+                    docID: ds.documentID, name: ds["eventName"], date: ds["time"], location: ds['location'], description: ds['description'], organizingGroup: ds['organizingGroup'], organizingIndividuals: organizingIndividuals, participatingIndividuals: participatingIndividuals
+                );
+              }
+          ));
+        });
+      }
+    );
   }
 }

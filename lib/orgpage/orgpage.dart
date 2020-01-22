@@ -16,38 +16,35 @@ class OrgPageState extends State<OrgPage> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Org Page")
-      ),
+        appBar: AppBar(title: Text("Org Page")),
         body: StreamBuilder(
-      stream: Firestore.instance
-          .collection('groups')
-          .document(widget.orgID)
-          .snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData)
-          return Text("Loading...");
-        else {
-          DocumentSnapshot ds = snapshot.data;
-          List<String> eventList = new List<String>.from(ds['eventList']);
+          stream: Firestore.instance
+              .collection('groups')
+              .document(widget.orgID)
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData)
+              return Text("Loading...");
+            else {
+              DocumentSnapshot ds = snapshot.data;
+              List<String> eventList = new List<String>.from(ds['eventList']);
 
-          return Center(
-              child: ListView(
-            children: <Widget>[
-              Text(widget.orgID),
-              joinGroup(widget.orgID),
-              Members(memberCount: ds['members'].length),
-              About(description: ds['description']),
-              Events(eventList: eventList),
-            ],
-          ));
-        }
-      },
-    ));
+              return Center(
+                  child: ListView(
+                children: <Widget>[
+                  Text(widget.orgID),
+                  joinGroup(widget.orgID),
+                  Members(memberList: ds['members']),
+                  About(description: ds['description']),
+                  Events(eventList: eventList),
+                ],
+              ));
+            }
+          },
+        ));
   }
-
-
 }
+
 StreamBuilder joinGroup(orgID) {
   return StreamBuilder(
       stream: Firestore.instance.collection('users').document(uid).snapshots(),
@@ -56,12 +53,11 @@ StreamBuilder joinGroup(orgID) {
           var ds = snapshot.data;
           List<String> adminList = new List<String>.from(ds['groupAdmin']);
           List<String> myGroups = new List<String>.from(ds['myGroups']);
-          for (var i = 0; i < adminList.length; i ++) {
+          for (var i = 0; i < adminList.length; i++) {
             if (adminList[i] == orgID) {
               return Container(
-                width: 150,
-                child: Text("You are an administrator of this group")
-              );
+                  width: 150,
+                  child: Text("You are an administrator of this group"));
             }
           }
           for (var j = 0; j < myGroups.length; j++) {
@@ -70,12 +66,17 @@ StreamBuilder joinGroup(orgID) {
                 color: Colors.grey,
                 child: Text("Leave this group"),
                 onPressed: () {
-                  Firestore.instance.collection("groups").document(orgID).updateData({
+                  Firestore.instance
+                      .collection("groups")
+                      .document(orgID)
+                      .updateData({
                     'members': FieldValue.arrayRemove([uid])
                   });
-                  Firestore.instance.collection("users").document(uid).updateData({
+                  Firestore.instance
+                      .collection("users")
+                      .document(uid)
+                      .updateData({
                     'myGroups': FieldValue.arrayRemove([orgID])
-
                   });
                   //setState(() => pressAttention = !pressAttention);
                 },
@@ -87,36 +88,49 @@ StreamBuilder joinGroup(orgID) {
             color: Colors.blue,
             child: Text("Join this group"),
             onPressed: () {
-              Firestore.instance.collection("groups").document(orgID).updateData({
+              Firestore.instance
+                  .collection("groups")
+                  .document(orgID)
+                  .updateData({
                 'members': FieldValue.arrayUnion([uid])
               });
               Firestore.instance.collection("users").document(uid).updateData({
                 'myGroups': FieldValue.arrayUnion([orgID])
-
               });
               //setState(() => pressAttention = !pressAttention);
             },
           );
         }
         return Text("Loading...");
-
-
-
       });
 }
 
 class Members extends StatelessWidget {
-  int memberCount;
-  Members({this.memberCount});
+  List<dynamic> memberList;
+
+  Members({this.memberList});
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
+    int memberCount = memberList.length;
     if (memberCount == 1) {
-      return Text(memberCount.toString() + " Member",
-          textAlign: TextAlign.center);
+      return GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              return MemberList(memberList: memberList);
+            }));
+          },
+          child: Text(memberCount.toString() + " Member",
+              textAlign: TextAlign.center));
     } else {
-      return Text(memberCount.toString() + " Members",
-          textAlign: TextAlign.center);
+      return GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              return MemberList(memberList: memberList);
+            }));
+          },
+          child: Text(memberCount.toString() + " Members",
+              textAlign: TextAlign.center));
     }
   }
 }
@@ -194,4 +208,27 @@ class Events extends StatelessWidget {
 //                  }));
 //        });
 //}
+}
+
+class MemberList extends StatelessWidget {
+  List<dynamic> memberList;
+  MemberList({this.memberList});
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    List<Widget> list = [];
+    for (var i = 0; i < memberList.length; i++) {
+      list.add(buildPerson(memberList[i].toString()));
+    }
+    return Scaffold(
+        appBar: AppBar(title: Text("Member List")),
+        body: Column(
+          children: list,
+        ));
+  }
+}
+
+Widget buildPerson(name) {
+  return Row(
+      mainAxisAlignment: MainAxisAlignment.center, children: [Text(name)]);
 }

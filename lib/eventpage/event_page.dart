@@ -35,6 +35,7 @@ class EventInner extends StatefulWidget {
 }
 
 class EventInnerState extends State<EventInner> {
+
   int difference = 0;
   void _incrementCounter() {
     setState(() {
@@ -269,6 +270,7 @@ class HostedBy extends StatefulWidget {
 class HostedByState extends State<HostedBy>{
   Future<Widget> buildList() async {
     List<Widget> list = [Text("Hosted by: ")];
+    print("Here are the hosts" + widget.hosts.toString());
     for (var i = 0; i < widget.hosts.length; i++) {
       if (i == 0) {
         await Firestore.instance.collection("users").document(widget.hosts[i]).get().then((
@@ -299,18 +301,23 @@ class HostedByState extends State<HostedBy>{
     }
     return Row(children:list);
   }
-  Widget buildGroupList = Column(children: <Widget>[Text("No groups")],);
 
-  MyGroupsState() {
-    buildList().then((val) =>
-        setState(() {
-          buildGroupList = val;
-        }));
-  }
     @override
     Widget build(BuildContext context) {
-      buildList;
-      return buildGroupList;
+      Future<Widget> list = buildList();
+      return FutureBuilder<Widget>(
+        future: list, // async work
+        builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting: return new Text('Loading....');
+            default:
+              if (snapshot.hasError)
+                return new Text('Error: ${snapshot.error}');
+              else
+                return snapshot.data;
+          }
+        },
+      );
     }
   }
 

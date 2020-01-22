@@ -25,16 +25,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primaryColor: Colors.deepOrange,
           primarySwatch: Colors.deepOrange,
-          textTheme:
-          Theme.of(context).textTheme.apply(
-              fontFamily: 'Open Sans')
+          textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Open Sans')
 //          TextTheme(
 //              headline: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
 //              title: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
 //              body1: TextStyle(fontSize: 18)
 //          ),
 
-      ),
+          ),
       home: LoginPage(),
 //        Scaffold( Center(
 //          child: Column(
@@ -88,33 +86,35 @@ class _HomeState extends State<Home> {
     return Scaffold(
       //appBar: AppBar(title: Text('Explore UT Clubs')),
       body: _children[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          onTap: onTabTapped,
-          currentIndex: _currentIndex,
-          items: [
-            BottomNavigationBarItem(
-              icon: new Icon(Icons.home),
-              title: new Text('Home'),
-            ),
-            BottomNavigationBarItem(
-              icon: new Icon(Icons.search),
-              title: new Text('Search'),
-            ),
-            BottomNavigationBarItem(
-              icon: new Icon(Icons.file_upload),
-              title: new Text('Upload'),
-            ),
-            BottomNavigationBarItem(
-              icon: new Icon(Icons.calendar_today),
-              title: new Text('Calendar'),
-            ),
-            BottomNavigationBarItem(
-              icon: new Icon(Icons.person),
-              title: new Text('Profile'),
-            ),
-          ]),
-    );
+      bottomNavigationBar: buildBottomNavBar(context));
+  }
+  Widget buildBottomNavBar(context) {
+    return BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        onTap: onTabTapped,
+        currentIndex: _currentIndex,
+        items: [
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.home),
+            title: new Text('Home'),
+          ),
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.search),
+            title: new Text('Search'),
+          ),
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.file_upload),
+            title: new Text('Upload'),
+          ),
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.calendar_today),
+            title: new Text('Calendar'),
+          ),
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.person),
+            title: new Text('Profile'),
+          ),
+        ]);
   }
 
 //Navigator.push(
