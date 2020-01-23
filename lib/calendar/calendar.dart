@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:club_app/login/sign_in.dart';
 import 'package:club_app/eventpage/event_page.dart';
+
 class CalendarPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
-      return Scaffold(
+    return Scaffold(
         appBar: AppBar(
           title: Text("Calendar"),
           leading: Text(""),
@@ -27,11 +27,10 @@ class CalendarPage extends StatelessWidget {
 //      CalendarEvent(),
 //    ]);
   }
+
   StreamBuilder buildStream() {
-    Stream<DocumentSnapshot> courseDocStream = Firestore.instance
-        .collection('users')
-        .document(uid)
-        .snapshots();
+    Stream<DocumentSnapshot> courseDocStream =
+        Firestore.instance.collection('users').document(uid).snapshots();
     return StreamBuilder<DocumentSnapshot>(
         stream: courseDocStream,
         builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
@@ -39,7 +38,6 @@ class CalendarPage extends StatelessWidget {
           if (snapshot.hasData) {
             // get course document
             var courseDocument = snapshot.data.data;
-
             // get sections from the document
             var sections = courseDocument['myEvents'];
             // build list using names from sections
@@ -55,26 +53,47 @@ class CalendarPage extends StatelessWidget {
           }
         });
   }
+
   StreamBuilder buildListTile(String eventID) {
     return StreamBuilder(
-      stream: Firestore.instance.collection("events").document(eventID).snapshots(),
-      builder: (context, snapshot) {
-        DocumentSnapshot ds = snapshot.data;
-        if (!snapshot.hasData) {
-          return Text("");
-        }
-        else {return ListTile(
-          //leading: Text(ds['time']),
+        stream: Firestore.instance
+            .collection("events")
+            .document(eventID)
+            .snapshots(),
+        builder: (context, snapshot) {
+          DocumentSnapshot ds = snapshot.data;
+          if (!snapshot.hasData) {
+            return Text("");
+          } else {
+            List<String> organizingIndividuals =
+            List<String>.from(ds['organizingIndividuals']);
+            List<String> participatingIndividuals =
+            List<String>.from(ds['participatingIndividuals']);
+            return ListTile(
+//              title: Column(
+//                children: <Widget>[
+//                  Text(ds['eventName']),
+//                  Text(ds['eventName']),
+//                  Text(ds['time'])
+//                ],
+//              ),
             title: Text(ds['eventName']),
-            //subtitle: Text(ds['organizingGroup']),
-            subtitle: Text(ds['location']),
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => EventInner(docID: eventID, name: ds['eventName'], date: ds['time'], location: ds['location'], description: ds['description'], organizingGroup:  ds['organizingGroup'])));
-            }
-
-        );}
-    }
-    );
+                subtitle: Text(ds['time']),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => EventInner(
+                          docID: ds.documentID,
+                          name: ds["eventName"],
+                          date: ds["time"],
+                          location: ds['location'],
+                          description: ds['description'],
+                          organizingGroup: ds['organizingGroup'],
+                          organizingIndividuals: organizingIndividuals,
+                          participatingIndividuals:
+                          participatingIndividuals)));
+                });
+          }
+        });
   }
 }
 
@@ -82,26 +101,20 @@ class CalendarEvent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(
-        top: 20,
-        left: 8
-      ),
-        child:Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("8:30 AM", style: TextStyle(color: Colors.deepOrange)),
-          Text("Concrete Canoe Paddle Day", style: TextStyle(fontWeight: FontWeight.bold)),
-          Text("Concrete Canoe Team"),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+        padding: EdgeInsets.only(top: 20, left: 8),
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.location_on),
-              Text("Lady Bird Lake")
-            ]
-          ),
-          SizedBox(height: 15),
-          Divider()
-        ]));
+              Text("8:30 AM", style: TextStyle(color: Colors.deepOrange)),
+              Text("Concrete Canoe Paddle Day",
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              Text("Concrete Canoe Team"),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [Icon(Icons.location_on), Text("Lady Bird Lake")]),
+              SizedBox(height: 15),
+              Divider()
+            ]));
   }
 }

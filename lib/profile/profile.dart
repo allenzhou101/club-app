@@ -224,7 +224,7 @@ class MyGroupsState extends State<MyGroups> {
                         ),
                         Column(
                           children: <Widget>[
-                            Text(adminList[i]),
+                            Text(adminList[i] + " (admin)"),
                             Text(ds['members'].length.toString())
                           ],
                         )
@@ -248,7 +248,7 @@ class MyGroupsState extends State<MyGroups> {
     }
     for (var i = 0; i < myGroups.length; i++) {
       list.add(StreamBuilder(
-          stream: Firestore.instance.collection('groups').document(adminList[i]).snapshots(),
+          stream: Firestore.instance.collection('groups').document(myGroups[i]).snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               var ds = snapshot.data;

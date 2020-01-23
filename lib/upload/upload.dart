@@ -31,7 +31,7 @@ class UploadPage extends StatelessWidget {
 class UploadEvent extends StatefulWidget {
   UploadEventState createState() => UploadEventState();
 }
-String organizingGroup, category;
+String organizingGroup, category, _currentSelectedValue;
 bool notAdmin = false;
 
 var textStyle = TextStyle(color: Colors.blue, fontSize: 16.0);
@@ -90,7 +90,6 @@ class UploadEventState extends State<UploadEvent> {
         " " +
         selectedTime.toString().substring(10, 15);
 
-    var _currentSelectedValue;
     var categoryList = ["Tech", "Culture", "Sustainability"];
     var textStyle = TextStyle(color: Colors.blue, fontSize: 16.0);
 //    if (notAdmin) {
@@ -107,9 +106,16 @@ class UploadEventState extends State<UploadEvent> {
           } else {
             DocumentSnapshot ds = snapshot.data;
 
-            List<String> categoryList = new List<String>.from(ds['groupAdmin']);
-            if (categoryList.length == 0) {
-              return Text("You're not an admin of any groups");
+            List<String> groupAdminList = new List<String>.from(ds['groupAdmin']);
+            if (groupAdminList.length == 0) {
+              return Center(child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(height: 40),
+                  Text("You're not an admin of any groups", style: TextStyle(fontSize: 20))
+                ],
+              ));
             }
             return FormField<String>(
                 validator: (value) {
@@ -182,45 +188,18 @@ class UploadEventState extends State<UploadEvent> {
 //                decoration: InputDecoration(labelText: 'Organizing Group'),
 //                onSaved: (value) => organizingGroup = uid,
 //              ),
-                            InputDecorator(
-                              decoration: InputDecoration(
-                                  labelStyle: textStyle,
-                                  errorStyle: TextStyle(color: Colors.redAccent, fontSize: 16.0),
-                                  hintText: 'Please select hosting group',
-                                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
-                              isEmpty: _currentSelectedValue == null,
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                  value: _currentSelectedValue,
-                                  isDense: true,
-                                  onChanged: (String newValue) {
-                                    setState(() {
-                                      _currentSelectedValue = newValue;
-                                      state.didChange(newValue);
-                                      //print(_currentSelectedValue);
-                                    });
-
-                                  },
-                                  items: categoryList.map((String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
-                            ),
-                            TextFormField(
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Please enter some text';
-                                }
-                                return null;
-                              },
-                              decoration:
-                              InputDecoration(labelText: 'Organizing Individuals'),
-                              onSaved: (value) => organizingIndividuals = [uid],
-                            ),
+                            BuildGroupForm(groupAdminList: groupAdminList),
+//                            TextFormField(
+//                              validator: (value) {
+//                                if (value.isEmpty) {
+//                                  return 'Please enter some text';
+//                                }
+//                                return null;
+//                              },
+//                              decoration:
+//                              InputDecoration(labelText: 'Organizing Individuals'),
+//                              onSaved: (value) => organizingIndividuals = [uid],
+//                            ),
                             BuildCategoryForm(),
                             TextFormField(
                               style: new TextStyle(color: Colors.black),
@@ -262,15 +241,14 @@ class UploadEventState extends State<UploadEvent> {
                 },
                 onSaved: (value) {
                   organizingGroup = _currentSelectedValue;
-                }
 
+                }
             );
           }
         },
       );
-
-    //}
   }
+
 
   void addData() async{
     final db = Firestore.instance;
@@ -290,6 +268,58 @@ class UploadEventState extends State<UploadEvent> {
     });
   }
 }
+
+
+class BuildGroupForm extends StatefulWidget {
+  List<String> groupAdminList;
+  BuildGroupForm({this.groupAdminList});
+  BuildGroupFormState createState() => BuildGroupFormState();
+}
+class BuildGroupFormState extends State<BuildGroupForm> {
+
+  Widget build(BuildContext context) {
+    return FormField<String>(
+        validator: (value) {
+      if (value.isEmpty) {
+        return 'Please enter some text';
+      }
+      return null;
+    },
+    builder: (FormFieldState<String> state) {
+    return InputDecorator(
+      decoration: InputDecoration(
+          labelStyle: textStyle,
+          errorStyle: TextStyle(color: Colors.redAccent, fontSize: 16.0),
+          hintText: 'Please select hosting group',
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
+      isEmpty: _currentSelectedValue == null,
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          value: _currentSelectedValue,
+          isDense: true,
+          onChanged: (String newValue) {
+            setState(() {
+              _currentSelectedValue = newValue;
+              state.didChange(newValue);
+            });
+
+          },
+          items: widget.groupAdminList.map((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+    },
+        onSaved: (value) {
+          organizingGroup = _currentSelectedValue;
+        }
+    );
+  }
+  }
 
 
 

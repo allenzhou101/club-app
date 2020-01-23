@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:club_app/eventpage/event_page.dart';
+
 class ExplorePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -56,17 +57,26 @@ class EventRow extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 5.0),
                         itemBuilder: (context, index) {
                           DocumentSnapshot ds = snapshot.data.documents[index];
-                          List<String> organizingIndividuals = List<String>.from(ds['organizingIndividuals']);
-                          List<String> participatingIndividuals = List<String>.from(ds['participatingIndividuals']);
+                          List<String> organizingIndividuals =
+                              List<String>.from(ds['organizingIndividuals']);
+                          List<String> participatingIndividuals =
+                              List<String>.from(ds['participatingIndividuals']);
                           //print(organizingIndividuals.toString());
                           //print(participatingIndividuals.toString());
-                         // print(ds['category']);
+                          // print(ds['category']);
                           //print(ds.documentID);
                           if (ds['category'] == category ||
                               category == 'Popular Now') {
                             return EventCard(
-                                docID: ds.documentID, name: ds["eventName"], date: ds["time"], location: ds['location'], description: ds['description'], organizingGroup: ds['organizingGroup'], organizingIndividuals: organizingIndividuals, participatingIndividuals: participatingIndividuals
-                            );
+                                docID: ds.documentID,
+                                name: ds["eventName"],
+                                date: ds["time"],
+                                location: ds['location'],
+                                description: ds['description'],
+                                organizingGroup: ds['organizingGroup'],
+                                organizingIndividuals: organizingIndividuals,
+                                participatingIndividuals:
+                                    participatingIndividuals);
                             //, location: ds['location'], description: ds['description'], organizingGroup: ds['organizingGroup'], organizingIndividuals: ds['organizingIndividuals'], participatingIndividuals: ds['participatingIndividuals']
                           }
                           return Text("");
@@ -88,7 +98,15 @@ class EventCard extends StatelessWidget {
   final String docID, name, date, location, description, organizingGroup;
   final List<String> organizingIndividuals, participatingIndividuals;
 
-  EventCard({this.docID, this.name: "", this.date: "", this.location, this.description, this.organizingGroup, this.organizingIndividuals, this.participatingIndividuals});
+  EventCard(
+      {this.docID,
+      this.name: "",
+      this.date: "",
+      this.location,
+      this.description,
+      this.organizingGroup,
+      this.organizingIndividuals,
+      this.participatingIndividuals});
   //this.location, this.description, this.organizingGroup, this.organizingIndividuals, this.participatingIndividuals
   @override
   Widget build(context) {
@@ -103,9 +121,17 @@ class EventCard extends StatelessWidget {
               )
             ])),
         onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) {return EventInner(docID: this.docID, name: this.name, date: this.date, location: this.location, description: this.description, organizingGroup:  this.organizingGroup, organizingIndividuals: this.organizingIndividuals, participatingIndividuals: this.participatingIndividuals);}
-          ));
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+            return EventInner(
+                docID: this.docID,
+                name: this.name,
+                date: this.date,
+                location: this.location,
+                description: this.description,
+                organizingGroup: this.organizingGroup,
+                organizingIndividuals: this.organizingIndividuals,
+                participatingIndividuals: this.participatingIndividuals);
+          }));
         });
   }
 }
@@ -115,35 +141,43 @@ class FeaturedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: databaseReference.collection("events").document("BwUp07KTu46MgYjKVATX").snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return Text("Loading...");
-        }
-        var ds = snapshot.data;
-        List<String> organizingIndividuals = List<String>.from(ds['organizingIndividuals']);
-        List<String> participatingIndividuals = List<String>.from(ds['participatingIndividuals']);
+        stream: databaseReference
+            .collection("events")
+            .document("T6ytg7AXav8O5QdsmMNO")
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Text("Loading...");
+          }
+          var ds = snapshot.data;
+          List<String> organizingIndividuals =
+              List<String>.from(ds['organizingIndividuals']);
+          List<String> participatingIndividuals =
+              List<String>.from(ds['participatingIndividuals']);
 
-        return GestureDetector(child:
-          Card(
-            child: Column(children: [
-              Image.asset('assets/images/canoe.jpg'),
-              ListTile(
-                title: Text(ds['eventName']),
-                subtitle: Text(ds['time']),
-              )
-            ])),
-        onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) {
-
-                return EventInner(
-                    docID: ds.documentID, name: ds["eventName"], date: ds["time"], location: ds['location'], description: ds['description'], organizingGroup: ds['organizingGroup'], organizingIndividuals: organizingIndividuals, participatingIndividuals: participatingIndividuals
-                );
-              }
-          ));
+          return GestureDetector(
+              child: Card(
+                  child: Column(children: [
+                Image.asset('assets/images/canoe.jpg'),
+                ListTile(
+                  title: Text(ds['eventName']),
+                  subtitle: Text(ds['time']),
+                )
+              ])),
+              onTap: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return EventInner(
+                      docID: ds.documentID,
+                      name: ds["eventName"],
+                      date: ds["time"],
+                      location: ds['location'],
+                      description: ds['description'],
+                      organizingGroup: ds['organizingGroup'],
+                      organizingIndividuals: organizingIndividuals,
+                      participatingIndividuals: participatingIndividuals);
+                }));
+              });
         });
-      }
-    );
   }
 }
