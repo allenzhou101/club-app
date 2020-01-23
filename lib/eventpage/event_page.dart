@@ -157,6 +157,8 @@ class EventInnerState extends State<EventInner> {
           ),
           title: Text(""),
           centerTitle: true,
+          backgroundColor: PrimaryColor,
+
         ),
         body: Center(
             child: SizedBox(

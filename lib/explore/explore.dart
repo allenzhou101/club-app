@@ -1,17 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:club_app/eventpage/event_page.dart';
+import 'package:club_app/main.dart';
 
 class ExplorePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ListView(children: [
+    return Scaffold(
+        appBar: AppBar(
+            centerTitle: true,
+        backgroundColor: PrimaryColor,
+        title: Text("Explore Events"),
+          leading: Text("")
+    ),
+    // drawer: Drawer(),
+    body: ListView(children: [
       FeaturedCard(),
       EventRow(category: "Popular Now"),
       EventRow(category: "Technology"),
       EventRow(category: "Sustainability"),
       EventRow(category: "Culture")
-    ]);
+    ]));
   }
 }
 

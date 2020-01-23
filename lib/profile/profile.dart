@@ -14,13 +14,16 @@ class ProfilePage extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         home: Scaffold(
           appBar: AppBar(
+            centerTitle: true,
             title: Text("Username"),
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.settings),
-                    onPressed: () {}
-              )
-            ],
+            backgroundColor: PrimaryColor,
+
+//            actions: <Widget>[
+//              IconButton(
+//                icon: Icon(Icons.settings),
+//                    onPressed: () {}
+//              )
+//            ],
           ),
             body: Padding(
               padding: EdgeInsets.only(

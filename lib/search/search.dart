@@ -15,6 +15,8 @@ class SearchWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: PrimaryColor,
           title: Text("Search App"),
           actions: <Widget>[
             IconButton(

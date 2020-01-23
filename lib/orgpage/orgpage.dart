@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:club_app/explore/explore.dart';
 import 'package:club_app/login/sign_in.dart';
+import 'package:club_app/main.dart';
 
 class OrgPage extends StatefulWidget {
   final String orgID;
@@ -85,7 +86,7 @@ StreamBuilder joinGroup(orgID) {
           }
 
           return RaisedButton(
-            color: Colors.blue,
+            color: PrimaryColor,
             child: Text("Join this group"),
             onPressed: () {
               Firestore.instance

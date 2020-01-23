@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:club_app/login/sign_in.dart';
 import 'package:club_app/eventpage/event_page.dart';
+import 'package:club_app/main.dart';
 
 class CalendarPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: PrimaryColor,
           title: Text("Calendar"),
           leading: Text(""),
         ),

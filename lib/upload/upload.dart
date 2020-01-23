@@ -10,7 +10,9 @@ class UploadPage extends StatelessWidget {
     // TODO: implement build
     return Scaffold(
         appBar: AppBar(
-          title: Center(child: Text('Create Event')),
+          centerTitle: true,
+          backgroundColor: PrimaryColor,
+          title: Text('Create Event'),
           leading: Text(""),
 //              leading: GestureDetector(
 //                  child: Padding(
