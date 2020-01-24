@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:club_app/eventpage/event_page.dart';
 import 'package:club_app/main.dart';
+import 'package:firebase_storage/firebase_storage.dart'; // For File Upload To Firestore
 
 class ExplorePage extends StatelessWidget {
   @override
@@ -145,7 +146,13 @@ class EventCard extends StatelessWidget {
   }
 }
 
-class FeaturedCard extends StatelessWidget {
+class FeaturedCard extends StatefulWidget {
+  @override
+  FeaturedCardState createState() => FeaturedCardState();
+}
+
+
+class FeaturedCardState extends State<FeaturedCard>{
   final databaseReference = Firestore.instance;
   @override
   Widget build(BuildContext context) {
@@ -163,11 +170,23 @@ class FeaturedCard extends StatelessWidget {
               List<String>.from(ds['organizingIndividuals']);
           List<String> participatingIndividuals =
               List<String>.from(ds['participatingIndividuals']);
+          String imageURL = 'assets/images/canoe.jpg';
 
+          void getImageURL() async{
+            final ref = FirebaseStorage.instance.ref().child('photos/image_picker1083099630.jpg}');
+            // no need of the file extension, the name will do fine.
+            var url = await ref.getDownloadURL();
+            if(mounted) {
+              setState((){
+                imageURL = url;
+              });
+            }
+          }
+          getImageURL();
           return GestureDetector(
               child: Card(
                   child: Column(children: [
-                Image.asset('assets/images/canoe.jpg'),
+                Image.network("https://firebasestorage.googleapis.com/v0/b/club-app-81238.appspot.com/o/photos%2Fimage_picker1083099630.jpg%7D?alt=media&token=69f0a890-a9be-49b6-8406-d543d745057f"),
                 ListTile(
                   title: Text(ds['eventName']),
                   subtitle: Text(ds['time']),

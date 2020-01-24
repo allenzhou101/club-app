@@ -11,6 +11,7 @@ import 'login/login.dart';
 import 'login/interests.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'orgpage/orgpage.dart';
+
 const PrimaryColor = const Color(0xFFFF9800);
 
 void main() => runApp(MyApp());
@@ -69,7 +70,8 @@ class _HomeState extends State<Home> {
   final List<Widget> _children = [
     ExplorePage(),
     SearchPage(),
-    UploadPage(),
+    //UploadPage(),
+    UploadPhoto(),
     CalendarPage(),
     ProfilePage()
   ];

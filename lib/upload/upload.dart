@@ -3,8 +3,88 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:club_app/login/sign_in.dart';
 import 'package:club_app/main.dart';
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart'; // For File Upload To Firestore
+import 'package:image_picker/image_picker.dart'; // For Image Picker
+import 'package:path/path.dart' as Path;
 
+
+
+class UploadPhoto extends StatefulWidget {
+  UploadPhotoState createState() => UploadPhotoState();
+}
+
+
+class UploadPhotoState extends State<UploadPhoto>{
+  File _image;
+  String _uploadedFileURL;
+  @override
+  Widget build(BuildContext context) {
+
+    Future chooseFile() async {
+      await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
+        setState(() {
+          _image = image;
+        });
+      });
+    }
+    // TODO: implement build
+    return Center(
+        child: Column(
+          children: <Widget>[
+            Text('Selected Image'),
+            _image != null
+                ? Image.asset(
+              _image.path,
+              height: 150,
+            )
+                : Container(height: 150),
+            _image == null
+                ? RaisedButton(
+              child: Text('Choose File'),
+              onPressed: chooseFile,
+              color: Colors.cyan,
+            )
+                : Container(),
+//            _image != null
+//                ? RaisedButton(
+//              child: Text('Upload File'),
+//              onPressed: uploadFile,
+//              color: Colors.cyan,
+//            )
+//                : Container(),
+//                    _image != null
+//                        ? RaisedButton(
+//                      child: Text('Clear Selection'),
+//                      onPressed: clearSelection,
+//                    )
+//                        : Container(),
+            _uploadedFileURL != null
+                ? Image.network(
+              _uploadedFileURL,
+              height: 150,
+            )
+                : Container(),
+
+            RaisedButton(
+              child: Text("continue"),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) {
+                    return UploadPage(image: _image, uploadedFileURL: _uploadedFileURL);
+                  }
+                ));
+              },
+            )
+          ],
+        )
+    );
+  }
+}
 class UploadPage extends StatelessWidget {
+  File image;
+  String uploadedFileURL;
+  UploadPage({this.image, this.uploadedFileURL});
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -13,7 +93,7 @@ class UploadPage extends StatelessWidget {
           centerTitle: true,
           backgroundColor: PrimaryColor,
           title: Text('Create Event'),
-          leading: Text(""),
+          //leading: Text(""),
 //              leading: GestureDetector(
 //                  child: Padding(
 //                      padding: EdgeInsets.only(top: 20), child: Text("Cancel")),
@@ -26,11 +106,14 @@ class UploadPage extends StatelessWidget {
 //                    onTap: () {})
 //              ],
         ),
-        body: UploadEvent());
+        body: UploadEvent(image:image, uploadedFileURL: uploadedFileURL));
   }
 }
 
 class UploadEvent extends StatefulWidget {
+  File image;
+  String uploadedFileURL;
+  UploadEvent({this.image, this.uploadedFileURL});
   UploadEventState createState() => UploadEventState();
 }
 String organizingGroup, category, _currentSelectedValue;
@@ -43,6 +126,8 @@ class UploadEventState extends State<UploadEvent> {
   var organizingIndividuals = ['words', 'morewords'];
   var attendees = new Map<String, String>();
   final _formKey = GlobalKey<FormState>();
+
+
 
   //Input date and time
   DateTime selectedDate = DateTime.now();
@@ -79,10 +164,8 @@ class UploadEventState extends State<UploadEvent> {
     }
   }
 
-  Future<Null> _selectDateAndTime(BuildContext context) async {
-    await _selectDate(context);
-    await _selectTime(context);
-  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -91,13 +174,13 @@ class UploadEventState extends State<UploadEvent> {
     textController.text = "${selectedDate.toLocal()}".split(' ')[0] +
         " " +
         selectedTime.toString().substring(10, 15);
-
+    Future<Null> _selectDateAndTime(BuildContext context) async {
+      await _selectDate(context);
+      await _selectTime(context);
+    }
     var categoryList = ["Tech", "Culture", "Sustainability"];
     var textStyle = TextStyle(color: Colors.blue, fontSize: 16.0);
-//    if (notAdmin) {
-//      return Text("You are not an administrator of any groups");
-//    }
-//    else {
+
       return StreamBuilder(
         stream: Firestore.instance.collection("users").document(uid).snapshots(),
         builder: (context, snapshot) {
@@ -119,7 +202,16 @@ class UploadEventState extends State<UploadEvent> {
                 ],
               ));
             }
-            return FormField<String>(
+
+
+
+            return ListView(children: [
+
+
+
+
+
+              FormField<String>(
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Please enter some text';
@@ -135,9 +227,9 @@ class UploadEventState extends State<UploadEvent> {
                           left: 80,
                         ),
                         child: ListView(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
                           children: <Widget>[
-//
-
                             TextFormField(
                               validator: (value) {
                                 if (value.isEmpty) {
@@ -219,13 +311,12 @@ class UploadEventState extends State<UploadEvent> {
                             RaisedButton(
                                 child: Text("Submit"),
                                 onPressed: () {
-                                  if (_formKey.currentState.validate()) {
+                                  if (_formKey.currentState.validate() && widget.image != null) {
                                     // If the form is valid, display a Snackbar.
                                     Scaffold.of(context).showSnackBar(
                                         SnackBar(content: Text('Processing Data')));
                                     _formKey.currentState.save();
-
-                                    addData();
+                                    addData(widget.image, widget.uploadedFileURL);
                                     Navigator.of(context).push(MaterialPageRoute(
                                       builder: (context) {
                                         return Home();
@@ -245,14 +336,28 @@ class UploadEventState extends State<UploadEvent> {
                   organizingGroup = _currentSelectedValue;
 
                 }
-            );
+            )]);
           }
         },
       );
   }
+  Future uploadFile() async {
 
+  }
 
-  void addData() async{
+  void addData(_image, _uploadedFileURL) async{
+    StorageReference storageReference = FirebaseStorage.instance
+        .ref()
+        .child('photos/${Path.basename(_image.path)}}');
+    print("a1");
+    StorageUploadTask uploadTask = storageReference.putFile(_image);
+    await uploadTask.onComplete;
+    print('File Uploaded');
+    await storageReference.getDownloadURL().then((fileURL) {
+      setState(() {
+        _uploadedFileURL = fileURL;
+      });
+    });
     final db = Firestore.instance;
     final myEventDoc =
     await db.collection("events").add({
@@ -263,7 +368,8 @@ class UploadEventState extends State<UploadEvent> {
       'description': description,
       'location': location,
       'time': time,
-      'category': category
+      'category': category,
+      'imageURL': _uploadedFileURL
     });
     db.collection("groups").document(organizingGroup).updateData({
       'eventList': FieldValue.arrayUnion([myEventDoc.documentID])
