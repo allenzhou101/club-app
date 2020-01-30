@@ -44,6 +44,17 @@ class CalendarPage extends StatelessWidget {
             // get sections from the document
             var sections = courseDocument['myEvents'];
             // build list using names from sections
+            if (sections.length == 0 ){
+              return Center(
+              child: Column(
+              children: <Widget>[
+                SizedBox(height: 60),
+                Text("You are not registered for any events")
+
+            ],
+              ),
+              );
+            }
             return ListView.builder(
               itemCount: sections != null ? sections.length : 0,
               itemBuilder: (_, int index) {

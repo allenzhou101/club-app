@@ -29,9 +29,9 @@ import 'package:club_app/orgpage/orgpage.dart';
 class EventInner extends StatefulWidget {
   @override
   EventInnerState createState() => EventInnerState();
-  final String docID, name, date, location, description, organizingGroup;
+  final String docID, name, date, location, description, organizingGroup, imageURL;
   final List<String> organizingIndividuals, participatingIndividuals;
-  EventInner({Key key, this.docID, this.name: "", this.date: "", this.location, this.description, this.organizingGroup, this.organizingIndividuals, this.participatingIndividuals}): super(key: key);
+  EventInner({Key key, this.imageURL, this.docID, this.name: "", this.date: "", this.location, this.description, this.organizingGroup, this.organizingIndividuals, this.participatingIndividuals}): super(key: key);
 }
 
 class EventInnerState extends State<EventInner> {
@@ -165,7 +165,7 @@ class EventInnerState extends State<EventInner> {
                 width: 375,
                 child: ListView(
                     children: [
-                      HeroImage(),
+                      HeroImage(widget.imageURL),
                       SizedBox(height: 10),
                       HeroTitle(widget.name),
                       SizedBox(height: 20),
@@ -190,13 +190,16 @@ class EventInnerState extends State<EventInner> {
 }
 
 class HeroImage extends StatelessWidget {
+  String imageURL;
+  HeroImage(this.imageURL);
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Container(
           padding: const EdgeInsets.all(8.0),
-          child: Image.asset('assets/images/canoe.jpg',
-              width: 400.0, height: 180.0, fit: BoxFit.cover))
+          child: Image.network(imageURL,
+              width: 400.0, height: 180.0, fit: BoxFit.cover)
+      )
     );
   }
 }
@@ -218,8 +221,6 @@ class Organizer extends StatefulWidget {
   OrganizerState createState() => OrganizerState();
 }
  class OrganizerState extends State<Organizer>{
-
-
   @override
   Widget build(BuildContext context) {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [

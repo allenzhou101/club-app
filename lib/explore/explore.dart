@@ -10,18 +10,17 @@ class ExplorePage extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
             centerTitle: true,
-        backgroundColor: PrimaryColor,
-        title: Text("Explore Events"),
-          leading: Text("")
-    ),
-    // drawer: Drawer(),
-    body: ListView(children: [
-      FeaturedCard(),
-      EventRow(category: "Popular Now"),
-      EventRow(category: "Technology"),
-      EventRow(category: "Sustainability"),
-      EventRow(category: "Culture")
-    ]));
+            backgroundColor: PrimaryColor,
+            title: Text("Explore Events"),
+            leading: Text("")),
+        // drawer: Drawer(),
+        body: ListView(children: [
+          //FeaturedCard(),
+          EventRow(category: "Popular Now"),
+          EventRow(category: "Technology"),
+          EventRow(category: "Sustainability"),
+          EventRow(category: "Culture")
+        ]));
   }
 }
 
@@ -78,6 +77,7 @@ class EventRow extends StatelessWidget {
                           if (ds['category'] == category ||
                               category == 'Popular Now') {
                             return EventCard(
+                                imageURL: ds['imageURL'],
                                 docID: ds.documentID,
                                 name: ds["eventName"],
                                 date: ds["time"],
@@ -105,11 +105,18 @@ class EventRow extends StatelessWidget {
 //}
 
 class EventCard extends StatelessWidget {
-  final String docID, name, date, location, description, organizingGroup;
+  final String imageURL,
+      docID,
+      name,
+      date,
+      location,
+      description,
+      organizingGroup;
   final List<String> organizingIndividuals, participatingIndividuals;
 
   EventCard(
-      {this.docID,
+      {this.imageURL,
+      this.docID,
       this.name: "",
       this.date: "",
       this.location,
@@ -124,7 +131,7 @@ class EventCard extends StatelessWidget {
         child: SizedBox(
             width: 200,
             child: Column(children: [
-              Image.asset('assets/images/lanterns.jpg'),
+              Image.network(imageURL),
               ListTile(
                 title: Text(name),
                 subtitle: Text(date),
@@ -133,6 +140,7 @@ class EventCard extends StatelessWidget {
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) {
             return EventInner(
+                imageURL: imageURL,
                 docID: this.docID,
                 name: this.name,
                 date: this.date,
@@ -146,20 +154,31 @@ class EventCard extends StatelessWidget {
   }
 }
 
+Future<String> getImageURL(imageURL) async {
+  final ref = FirebaseStorage.instance.ref().child(imageURL);
+  // no need of the file extension, the name will do fine.
+  var url = await ref.getDownloadURL();
+//            if(mounted) {
+//              setState((){
+//                imageURL = url;
+//              });
+//            }
+  return url;
+}
+
 class FeaturedCard extends StatefulWidget {
   @override
   FeaturedCardState createState() => FeaturedCardState();
 }
 
-
-class FeaturedCardState extends State<FeaturedCard>{
+class FeaturedCardState extends State<FeaturedCard> {
   final databaseReference = Firestore.instance;
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
         stream: databaseReference
             .collection("events")
-            .document("T6ytg7AXav8O5QdsmMNO")
+            .document("apucfBeZ5Z02MBITzAQ6")
             .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -172,26 +191,17 @@ class FeaturedCardState extends State<FeaturedCard>{
               List<String>.from(ds['participatingIndividuals']);
           String imageURL = 'assets/images/canoe.jpg';
 
-          void getImageURL() async{
-            final ref = FirebaseStorage.instance.ref().child('photos/image_picker1083099630.jpg}');
-            // no need of the file extension, the name will do fine.
-            var url = await ref.getDownloadURL();
-            if(mounted) {
-              setState((){
-                imageURL = url;
-              });
-            }
-          }
-          getImageURL();
           return GestureDetector(
               child: Card(
-                  child: Column(children: [
-                Image.network("https://firebasestorage.googleapis.com/v0/b/club-app-81238.appspot.com/o/photos%2Fimage_picker1083099630.jpg%7D?alt=media&token=69f0a890-a9be-49b6-8406-d543d745057f"),
-                ListTile(
-                  title: Text(ds['eventName']),
-                  subtitle: Text(ds['time']),
-                )
-              ])),
+                  child: Column(
+                children: [
+                  Image.network(ds['imageURL']),
+                  ListTile(
+                    title: Text(ds['eventName']),
+                    subtitle: Text(ds['time']),
+                  )
+                ],
+              )),
               onTap: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
@@ -206,6 +216,8 @@ class FeaturedCardState extends State<FeaturedCard>{
                       participatingIndividuals: participatingIndividuals);
                 }));
               });
+
+//
         });
   }
 }

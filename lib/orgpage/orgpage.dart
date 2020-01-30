@@ -161,6 +161,8 @@ class Events extends StatelessWidget {
 
   List<Widget> ListMyWidgets(eventList) {
     List<Widget> list = new List();
+    print(eventList.length);
+    print("hello");
     for (var i = 0; i < eventList.length; i++) {
       list.add(StreamBuilder(
           stream: Firestore.instance
@@ -173,6 +175,7 @@ class Events extends StatelessWidget {
             } else {
               var ds = snapshot.data;
               return EventCard(
+                  imageURL: ds['imageURL'],
                   docID: ds.documentID,
                   name: ds["eventName"],
                   date: ds["time"],

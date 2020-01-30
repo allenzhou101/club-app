@@ -30,22 +30,47 @@ class UploadPhotoState extends State<UploadPhoto>{
     }
     // TODO: implement build
     return Center(
-        child: Column(
+        child: Row(
           children: <Widget>[
-            Text('Selected Image'),
             _image != null
                 ? Image.asset(
               _image.path,
-              height: 150,
+              height: 50,
             )
-                : Container(height: 150),
+                : Container(
+              child: Icon(Icons.photo_filter, size: 75)
+            ),
+            SizedBox(width: 25),
+
             _image == null
                 ? RaisedButton(
-              child: Text('Choose File'),
+              child: Text('Add Event Photo'),
               onPressed: chooseFile,
               color: Colors.cyan,
             )
-                : Container(),
+                : RaisedButton(
+                child: Text("Change Event Photo"),
+                onPressed: chooseFile
+            ),
+//            Column(
+//              children: <Widget>[
+//                RaisedButton(
+//                  child: Text("Change Event Photo"),
+//                  onPressed: chooseFile
+//                ),
+//                RaisedButton(
+//                  child: Text("Continue"),
+//                  color: Colors.orange,
+//                  onPressed: () {
+//                    Navigator.of(context).push(MaterialPageRoute(
+//                        builder: (context) {
+//                          return UploadPage(image: _image, uploadedFileURL: _uploadedFileURL);
+//                        }
+//                    ));
+//                  },
+//                )
+//              ],
+//            ),
 //            _image != null
 //                ? RaisedButton(
 //              child: Text('Upload File'),
@@ -66,16 +91,7 @@ class UploadPhotoState extends State<UploadPhoto>{
             )
                 : Container(),
 
-            RaisedButton(
-              child: Text("continue"),
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) {
-                    return UploadPage(image: _image, uploadedFileURL: _uploadedFileURL);
-                  }
-                ));
-              },
-            )
+
           ],
         )
     );
@@ -93,7 +109,7 @@ class UploadPage extends StatelessWidget {
           centerTitle: true,
           backgroundColor: PrimaryColor,
           title: Text('Create Event'),
-          //leading: Text(""),
+          leading: Text(""),
 //              leading: GestureDetector(
 //                  child: Padding(
 //                      padding: EdgeInsets.only(top: 20), child: Text("Cancel")),
@@ -282,6 +298,7 @@ class UploadEventState extends State<UploadEvent> {
 //                decoration: InputDecoration(labelText: 'Organizing Group'),
 //                onSaved: (value) => organizingGroup = uid,
 //              ),
+                            UploadPhoto(),
                             BuildGroupForm(groupAdminList: groupAdminList),
 //                            TextFormField(
 //                              validator: (value) {
@@ -308,6 +325,8 @@ class UploadEventState extends State<UploadEvent> {
                               decoration: InputDecoration(labelText: 'Description'),
                               onSaved: (value) => description = value,
                             ),
+                            
+
                             RaisedButton(
                                 child: Text("Submit"),
                                 onPressed: () {
@@ -341,15 +360,11 @@ class UploadEventState extends State<UploadEvent> {
         },
       );
   }
-  Future uploadFile() async {
-
-  }
 
   void addData(_image, _uploadedFileURL) async{
     StorageReference storageReference = FirebaseStorage.instance
         .ref()
         .child('photos/${Path.basename(_image.path)}}');
-    print("a1");
     StorageUploadTask uploadTask = storageReference.putFile(_image);
     await uploadTask.onComplete;
     print('File Uploaded');
