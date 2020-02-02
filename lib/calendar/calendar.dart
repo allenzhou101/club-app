@@ -96,6 +96,7 @@ class CalendarPage extends StatelessWidget {
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) => EventInner(
+                          imageURL: ds['imageURL'],
                           docID: ds.documentID,
                           name: ds["eventName"],
                           date: ds["time"],

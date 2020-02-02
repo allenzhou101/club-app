@@ -162,7 +162,6 @@ class Events extends StatelessWidget {
   List<Widget> ListMyWidgets(eventList) {
     List<Widget> list = new List();
     print(eventList.length);
-    print("hello");
     for (var i = 0; i < eventList.length; i++) {
       list.add(StreamBuilder(
           stream: Firestore.instance
