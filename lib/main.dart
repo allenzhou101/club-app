@@ -70,8 +70,8 @@ class _HomeState extends State<Home> {
   final List<Widget> _children = [
     ExplorePage(),
     SearchPage(),
-    UploadPage(),
-    //UploadPhoto(),
+    //UploadPage(),
+    UploadPhoto(),
     CalendarPage(),
     ProfilePage()
   ];

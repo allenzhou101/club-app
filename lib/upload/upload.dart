@@ -29,48 +29,78 @@ class UploadPhotoState extends State<UploadPhoto>{
       });
     }
     // TODO: implement build
-    return Center(
-        child: Row(
-          children: <Widget>[
-            _image != null
-                ? Image.asset(
-              _image.path,
-              height: 50,
-            )
-                : Container(
-              child: Icon(Icons.photo_filter, size: 75)
-            ),
-            SizedBox(width: 25),
-
-            _image == null
-                ? RaisedButton(
-              child: Text('Add Event Photo'),
-              onPressed: chooseFile,
-              color: Colors.cyan,
-            )
-                : RaisedButton(
-                child: Text("Change Event Photo"),
-                onPressed: chooseFile
-            ),
-//            Column(
-//              children: <Widget>[
-//                RaisedButton(
-//                  child: Text("Change Event Photo"),
-//                  onPressed: chooseFile
-//                ),
-//                RaisedButton(
-//                  child: Text("Continue"),
-//                  color: Colors.orange,
-//                  onPressed: () {
-//                    Navigator.of(context).push(MaterialPageRoute(
-//                        builder: (context) {
-//                          return UploadPage(image: _image, uploadedFileURL: _uploadedFileURL);
-//                        }
-//                    ));
-//                  },
-//                )
+    return Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: PrimaryColor,
+          title: Text('Create Event'),
+leading: Text("")
+//              leading: GestureDetector(
+//                  child: Padding(
+//                      padding: EdgeInsets.only(top: 20), child: Text("Cancel")),
+//                  onTap: () {}),
+//              actions: <Widget>[
+//                GestureDetector(
+//                    child: Padding(
+//                        padding: EdgeInsets.only(top: 20),
+//                        child: Text("Share")),
+//                    onTap: () {})
 //              ],
-//            ),
+        ),
+
+        body:Column(
+        children: [
+          SizedBox(height: 50),
+          Text("Pick an event picture", style: TextStyle(fontSize: 30)),
+          SizedBox(height: 100),
+          _image != null
+              ? Image.asset(
+            _image.path,
+            height: 150,
+          )
+              : Container(
+              child: Icon(Icons.photo_filter, size: 75)
+          ),
+          SizedBox(width: 25),
+
+          _image == null
+              ? RaisedButton(
+            child: Text('Add Event Photo'),
+            onPressed: chooseFile,
+            color: Colors.cyan,
+          )
+              : RaisedButton(
+              child: Text("Change Event Photo"),
+              onPressed: chooseFile
+          ),
+          _image != null
+              ? RaisedButton(
+            child: Text("Continue"),
+            color: Colors.orange,
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) {
+                    return UploadPage(image: _image, uploadedFileURL: _uploadedFileURL);
+                  }
+              ));
+            },
+          ): RaisedButton(
+            child: Text("Continue"),
+            color: Colors.grey,
+//            onPressed: () {
+//              Navigator.of(context).push(MaterialPageRoute(
+//                  builder: (context) {
+//                    return UploadPage(image: _image, uploadedFileURL: _uploadedFileURL);
+//                  }
+//              ));
+//            },
+          ),
+          Column(
+            children: <Widget>[
+
+
+            ],
+          ),
 //            _image != null
 //                ? RaisedButton(
 //              child: Text('Upload File'),
@@ -84,17 +114,15 @@ class UploadPhotoState extends State<UploadPhoto>{
 //                      onPressed: clearSelection,
 //                    )
 //                        : Container(),
-            _uploadedFileURL != null
-                ? Image.network(
-              _uploadedFileURL,
-              height: 150,
-            )
-                : Container(),
+          _uploadedFileURL != null
+              ? Image.network(
+            _uploadedFileURL,
+            height: 150,
+          )
+              : Container(),
 
-
-          ],
-        )
-    );
+        ]
+    ));
   }
 }
 class UploadPage extends StatelessWidget {
@@ -109,7 +137,6 @@ class UploadPage extends StatelessWidget {
           centerTitle: true,
           backgroundColor: PrimaryColor,
           title: Text('Create Event'),
-          leading: Text(""),
 //              leading: GestureDetector(
 //                  child: Padding(
 //                      padding: EdgeInsets.only(top: 20), child: Text("Cancel")),
@@ -298,7 +325,7 @@ class UploadEventState extends State<UploadEvent> {
 //                decoration: InputDecoration(labelText: 'Organizing Group'),
 //                onSaved: (value) => organizingGroup = uid,
 //              ),
-                            UploadPhoto(),
+                            //UploadPhoto(),
                             BuildGroupForm(groupAdminList: groupAdminList),
 //                            TextFormField(
 //                              validator: (value) {
