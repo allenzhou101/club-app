@@ -44,15 +44,14 @@ class CalendarPage extends StatelessWidget {
             // get sections from the document
             var sections = courseDocument['myEvents'];
             // build list using names from sections
-            if (sections.length == 0 ){
+            if (sections.length == 0) {
               return Center(
-              child: Column(
-              children: <Widget>[
-                SizedBox(height: 60),
-                Text("You are not registered for any events")
-
-            ],
-              ),
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(height: 60),
+                    Text("You are not registered for any events")
+                  ],
+                ),
               );
             }
             return ListView.builder(
@@ -80,19 +79,10 @@ class CalendarPage extends StatelessWidget {
             return Text("");
           } else {
             List<String> organizingIndividuals =
-            List<String>.from(ds['organizingIndividuals']);
+                List<String>.from(ds['organizingIndividuals']);
             List<String> participatingIndividuals =
-            List<String>.from(ds['participatingIndividuals']);
-            return ListTile(
-//              title: Column(
-//                children: <Widget>[
-//                  Text(ds['eventName']),
-//                  Text(ds['eventName']),
-//                  Text(ds['time'])
-//                ],
-//              ),
-            title: Text(ds['eventName']),
-                subtitle: Text(ds['time']),
+                List<String>.from(ds['participatingIndividuals']);
+            return GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) => EventInner(
@@ -104,9 +94,23 @@ class CalendarPage extends StatelessWidget {
                           description: ds['description'],
                           organizingGroup: ds['organizingGroup'],
                           organizingIndividuals: organizingIndividuals,
-                          participatingIndividuals:
-                          participatingIndividuals)));
-                });
+                          participatingIndividuals: participatingIndividuals)));
+                },
+                child: Row(
+                  children: <Widget>[
+                    SizedBox(width: 30),
+                    Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(ds['eventName'], style: TextStyle(fontSize: 25)),
+                          Text(ds['time']),
+                          Text(ds['location']),
+                          Divider()
+                        ])
+                  ],
+                )
+
+            );
           }
         });
   }

@@ -128,15 +128,17 @@ class EventCard extends StatelessWidget {
   @override
   Widget build(context) {
     return GestureDetector(
-        child: SizedBox(
-            width: 200,
-            child: Column(children: [
-              Image.network(imageURL),
-              ListTile(
-                title: Text(name),
-                subtitle: Text(date),
-              )
-            ])),
+        child: Padding(
+            padding: EdgeInsets.only(right: 8),
+            child: SizedBox(
+                width: 200,
+                child: Column(children: [
+                  Image.network(imageURL),
+                  ListTile(
+                    title: Text(name),
+                    subtitle: Text(date),
+                  )
+                ]))),
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) {
             return EventInner(
