@@ -11,11 +11,15 @@ class ExplorePage extends StatelessWidget {
         appBar: AppBar(
             centerTitle: true,
             backgroundColor: PrimaryColor,
-            title: Text("Explore Events"),
+            title: Text("UT Austin"),
             leading: Text("")),
         // drawer: Drawer(),
         body: ListView(children: [
           //FeaturedCard(),
+          Padding(
+            padding: EdgeInsets.all(15),
+            child: Text("Explore Events", style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold))
+          ),
           EventRow(category: "Popular Now"),
           EventRow(category: "Technology"),
           EventRow(category: "Sustainability"),
@@ -47,9 +51,9 @@ class EventRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Padding(
-          padding: EdgeInsets.all(10),
+          padding: EdgeInsets.all(15),
           child: Text(category,
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold))),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))),
       SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: StreamBuilder<QuerySnapshot>(
@@ -129,15 +133,45 @@ class EventCard extends StatelessWidget {
   Widget build(context) {
     return GestureDetector(
         child: Padding(
-            padding: EdgeInsets.only(right: 8),
+            padding: EdgeInsets.only(
+                right: 10,
+                left: 15
+
+            ),
             child: SizedBox(
                 width: 200,
-                child: Column(children: [
-                  Image.network(imageURL),
-                  ListTile(
-                    title: Text(name),
-                    subtitle: Text(date),
+                height: 100,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Image.network(
+                        imageURL,
+                        //height: 100.0,
+                        height: 200.0,
+                        //height: 50
+                      ),
+
+                  ),
+
+//                  ListTile(
+//                    title: Text(name),
+//                    subtitle: Text(date),
+//                  ),
+                  Column(
+                    //mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      SizedBox(height: 8),
+                      Text(date, style: TextStyle(fontSize: 18, color: Color(0xFFb5934e))),
+                      SizedBox(height: 6),
+                      Text(name, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                      SizedBox(height: 3),
+                      Text(location, style: TextStyle(fontSize: 15, color: Colors.grey[700],))
+                    ],
                   )
+
                 ]))),
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) {
