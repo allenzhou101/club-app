@@ -3,15 +3,24 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:club_app/login/sign_in.dart';
 import 'package:club_app/eventpage/event_page.dart';
 import 'package:club_app/main.dart';
+import 'package:club_app/explore/explore.dart';
+
+
 
 class CalendarPage extends StatelessWidget {
+  List<Widget> orderedDates = [];
+
+
+
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
           backgroundColor: PrimaryColor,
-          title: Text("Calendar"),
+          title: Text("Calendar", style: appBarStyle),
           leading: Text(""),
         ),
         body: buildStream());
@@ -31,7 +40,14 @@ class CalendarPage extends StatelessWidget {
 //    ]);
   }
 
+  Column buildColumn()  {
+    return Column(
+      children: orderedDates,
+    );
+  }
+
   StreamBuilder buildStream() {
+
     Stream<DocumentSnapshot> courseDocStream =
         Firestore.instance.collection('users').document(uid).snapshots();
     return StreamBuilder<DocumentSnapshot>(
@@ -68,6 +84,7 @@ class CalendarPage extends StatelessWidget {
   }
 
   StreamBuilder buildListTile(String eventID) {
+
     return StreamBuilder(
         stream: Firestore.instance
             .collection("events")
@@ -82,6 +99,26 @@ class CalendarPage extends StatelessWidget {
                 List<String>.from(ds['organizingIndividuals']);
             List<String> participatingIndividuals =
                 List<String>.from(ds['participatingIndividuals']);
+
+
+            //Attemped sorting of dates
+//            if (orderedDates.length == 0) {
+//              orderedDates.add(ds['time']);
+//            }
+//            else {
+//              for (int i = 0; i < orderedDates.length; i++) {
+//                if (!(ds['time'].compareTo(orderedDates[i]) > 0)) {
+//                  orderedDates.insert(i, ds['time']);
+//                  break;
+//                }
+//                if ((i == orderedDates.length-1)) {
+//                  orderedDates.add(ds['time']);
+//                  break;
+//                }
+//              }
+//            }
+//            print(orderedDates.toString());
+
             return GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
@@ -96,20 +133,24 @@ class CalendarPage extends StatelessWidget {
                           organizingIndividuals: organizingIndividuals,
                           participatingIndividuals: participatingIndividuals)));
                 },
-                child: Row(
-                  children: <Widget>[
-                    SizedBox(width: 30),
+                child:
+Padding(
+                padding: EdgeInsets.only(
+          left: 10
+          ),
+                    child:
+
                     Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(ds['eventName'], style: TextStyle(fontSize: 25)),
-                          Text(ds['time']),
-                          Text(ds['location']),
-                          Divider()
-                        ])
-                  ],
-                )
 
+                          Text(convertDate(ds['time']), style: TextStyle(fontSize: 18, color: brownOrange)),
+                          SizedBox(height: 5),
+                          Text(ds['eventName'], style: TextStyle(fontSize: 25)),
+                          Text(ds['location']),
+                          Divider(color: Colors.grey, )
+                        ])
+)
             );
           }
         });

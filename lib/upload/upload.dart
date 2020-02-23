@@ -33,7 +33,7 @@ class UploadPhotoState extends State<UploadPhoto>{
         appBar: AppBar(
           centerTitle: true,
           backgroundColor: PrimaryColor,
-          title: Text('Create Event'),
+          title: Text('Create Event', style: appBarStyle),
 leading: Text("")
 //              leading: GestureDetector(
 //                  child: Padding(
@@ -175,6 +175,7 @@ class UploadEventState extends State<UploadEvent> {
   //Input date and time
   DateTime selectedDate = DateTime.now();
   final now = DateTime.now();
+
 
   Future<Null> _selectDate(BuildContext context) async {
     final lastMidnight = new DateTime(now.year, now.month, now.day - 2);

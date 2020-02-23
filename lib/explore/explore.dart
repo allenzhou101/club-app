@@ -11,15 +11,20 @@ class ExplorePage extends StatelessWidget {
         appBar: AppBar(
             centerTitle: true,
             backgroundColor: PrimaryColor,
-            title: Text("UT Austin"),
+            title: Column(children: [
+              SizedBox(height: 8),
+              Text("The University of Texas at Austin",
+                  style: TextStyle(color: MyOrange, fontSize: 18))
+            ]),
             leading: Text("")),
         // drawer: Drawer(),
         body: ListView(children: [
           //FeaturedCard(),
           Padding(
-            padding: EdgeInsets.all(15),
-            child: Text("Explore Events", style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold))
-          ),
+              padding: EdgeInsets.all(15),
+              child: Text("Explore Events",
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold))),
+          //FeaturedCard(),
           EventRow(category: "Popular Now"),
           EventRow(category: "Technology"),
           EventRow(category: "Sustainability"),
@@ -62,7 +67,7 @@ class EventRow extends StatelessWidget {
                 if (!snapshot.hasData) return Text("Loading...");
 
                 return Container(
-                    height: 300,
+                    height: 250,
                     child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         shrinkWrap: true,
@@ -129,50 +134,62 @@ class EventCard extends StatelessWidget {
       this.organizingIndividuals,
       this.participatingIndividuals});
   //this.location, this.description, this.organizingGroup, this.organizingIndividuals, this.participatingIndividuals
+
   @override
   Widget build(context) {
+
+
     return GestureDetector(
         child: Padding(
-            padding: EdgeInsets.only(
-                right: 10,
-                left: 15
-
-            ),
+            padding: EdgeInsets.only(right: 10, left: 15),
             child: SizedBox(
                 width: 200,
                 height: 100,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: Image.network(
-                        imageURL,
-                        //height: 100.0,
-                        height: 200.0,
-                        //height: 50
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(5.0),
+                        child: Image.network(
+                          imageURL,
+                          fit: BoxFit.fill,
+                          height: 120,
+                          width: 250,
+                          loadingBuilder: (context, child, progress) {
+                            return progress == null
+                                ? child
+                                : LinearProgressIndicator();
+                          },
+                          //height: 100.0,
+                          //height: 100.0,
+                          //width: 800
+                          //height: 50
+                        ),
                       ),
-
-                  ),
 
 //                  ListTile(
 //                    title: Text(name),
 //                    subtitle: Text(date),
 //                  ),
-                  Column(
-                    //mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(height: 8),
-                      Text(date, style: TextStyle(fontSize: 18, color: Color(0xFFb5934e))),
-                      SizedBox(height: 6),
-                      Text(name, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                      SizedBox(height: 3),
-                      Text(location, style: TextStyle(fontSize: 15, color: Colors.grey[700],))
-                    ],
-                  )
-
-                ]))),
+                      Column(
+                        //mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          SizedBox(height: 8),
+                          Text(convertDate(date),
+                              style: TextStyle(
+                                  fontSize: 16, color: brownOrange)),
+                          SizedBox(height: 6),
+                          Text(name, style: TextStyle(fontSize: 20)),
+                          SizedBox(height: 3),
+                          Text(location,
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.grey[700],
+                              ))
+                        ],
+                      )
+                    ]))),
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) {
             return EventInner(
@@ -214,7 +231,7 @@ class FeaturedCardState extends State<FeaturedCard> {
     return StreamBuilder(
         stream: databaseReference
             .collection("events")
-            .document("apucfBeZ5Z02MBITzAQ6")
+            .document("1PFKVtQlgP2WpYa5ceHD")
             .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -242,6 +259,7 @@ class FeaturedCardState extends State<FeaturedCard> {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
                   return EventInner(
+                      imageURL: ds['imageURL'],
                       docID: ds.documentID,
                       name: ds["eventName"],
                       date: ds["time"],
@@ -256,4 +274,96 @@ class FeaturedCardState extends State<FeaturedCard> {
 //
         });
   }
+}
+
+
+
+
+
+
+String convertDate(date) {
+  var splitDate = date.split(" ");
+  var virTime = splitDate[1];
+  var hourMinute = virTime.split(":");
+  var virHour = int.parse(hourMinute[0]);
+  String hour;
+  var minute = hourMinute[1];
+  if (virHour > 12) {
+    virHour -= 12;
+    hour = virHour.toString() + ":" + minute + " PM";
+  } else {
+    hour = virHour.toString() + ":" + minute + " AM";
+  }
+
+  var monthDay = splitDate[0].split("-");
+
+  var virMonth = int.parse(monthDay[1]);
+  String month;
+  switch (virMonth) {
+    case 1:
+      {
+        month = "January";
+      }
+      break;
+    case 2:
+      {
+        month = "February";
+      }
+      break;
+    case 3:
+      {
+        month = "March";
+      }
+      break;
+    case 4:
+      {
+        month = "April";
+      }
+      break;
+    case 5:
+      {
+        month = "May";
+      }
+      break;
+    case 6:
+      {
+        month = "June";
+      }
+      break;
+    case 7:
+      {
+        month = "July";
+      }
+      break;
+    case 8:
+      {
+        month = "August";
+      }
+      break;
+    case 9:
+      {
+        month = "September";
+      }
+      break;
+    case 10:
+      {
+        month = "October";
+      }
+      break;
+    case 11:
+      {
+        month = "November";
+      }
+      break;
+    case 12:
+      {
+        month = "December";
+      }
+      break;
+  }
+  var day = monthDay[2];
+  if (day.substring(0, 1) == "0") {
+    day = day.substring(1, 2);
+  }
+  return month + " " + day + ", " + hour;
 }

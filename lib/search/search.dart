@@ -17,7 +17,7 @@ class SearchWrapper extends StatelessWidget {
         appBar: AppBar(
           centerTitle: true,
           backgroundColor: PrimaryColor,
-          title: Text("Search App"),
+          title: Text("Search App", style: appBarStyle),
           actions: <Widget>[
             IconButton(
                 icon: Icon(Icons.search),

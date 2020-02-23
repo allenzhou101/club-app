@@ -12,7 +12,11 @@ import 'login/interests.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'orgpage/orgpage.dart';
 
-const PrimaryColor = const Color(0xFFFF9800);
+const PrimaryColor = Colors.white;
+const MyOrange = const Color(0xFFFF9800);
+const appBarStyle = TextStyle(color: Colors.black);
+const brownOrange = Color(0xFF9C6116);
+
 
 void main() => runApp(MyApp());
 
@@ -25,10 +29,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primaryColor: Colors.deepOrange,
           primarySwatch: Colors.deepOrange,
-          textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Open Sans')
+          textTheme:
+          Theme.of(context).textTheme.apply(fontFamily: 'Open Sans', bodyColor: Colors.black,  )
 //          TextTheme(
-//              headline: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-//              title: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+//              headline: TextStyle(fontSize: 28, fontWeight: FontWeight.bold,),
+//              title: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.black),
 //              body1: TextStyle(fontSize: 18)
 //          ),
 

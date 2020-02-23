@@ -15,7 +15,7 @@ class ProfilePage extends StatelessWidget {
         home: Scaffold(
           appBar: AppBar(
             centerTitle: true,
-            title: Text("Username"),
+            title: Text("Username", style: appBarStyle),
             backgroundColor: PrimaryColor,
 
 //            actions: <Widget>[
