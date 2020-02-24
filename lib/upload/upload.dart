@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart'; // For Image Picker
 import 'package:path/path.dart' as Path;
 
 
+bool adminBool = true;
 
 class UploadPhoto extends StatefulWidget {
   UploadPhotoState createState() => UploadPhotoState();
@@ -28,7 +29,49 @@ class UploadPhotoState extends State<UploadPhoto>{
         });
       });
     }
+
+
     // TODO: implement build
+
+
+    Future<bool> adminCheck() async {
+      var docRef = Firestore.instance.collection("users").document(uid);
+
+      await docRef.get().then<dynamic>(( DocumentSnapshot snapshot) async{
+        if (snapshot.data['groupAdmin'].length == 0) {
+          if (!mounted) return;
+          setState(() {
+            adminBool = true;
+          });
+        }
+        else {
+          if (!mounted) return;
+          setState(() {
+            adminBool = false;
+          });
+        }
+      });
+
+//      List<String> groupAdminList = new List<String>.from(docRef['groupAdmin']);
+//      if (groupAdminList.length == 0) {
+//        return true;
+//      }
+//      else return false;
+    }
+
+
+    adminCheck();
+    if (adminBool) {
+      return Center(child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          SizedBox(height: 40),
+          Text("You're not an admin of any groups", style: TextStyle(fontSize: 20))
+        ],
+      ));
+    }
+    else
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -236,16 +279,16 @@ class UploadEventState extends State<UploadEvent> {
             DocumentSnapshot ds = snapshot.data;
 
             List<String> groupAdminList = new List<String>.from(ds['groupAdmin']);
-            if (groupAdminList.length == 0) {
-              return Center(child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(height: 40),
-                  Text("You're not an admin of any groups", style: TextStyle(fontSize: 20))
-                ],
-              ));
-            }
+//            if (groupAdminList.length == 0) {
+//              return Center(child: Column(
+//                crossAxisAlignment: CrossAxisAlignment.center,
+//                mainAxisAlignment: MainAxisAlignment.center,
+//                children: <Widget>[
+//                  SizedBox(height: 40),
+//                  Text("You're not an admin of any groups", style: TextStyle(fontSize: 20))
+//                ],
+//              ));
+//            }
 
 
 
