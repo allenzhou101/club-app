@@ -5,16 +5,20 @@ import 'package:club_app/eventpage/event_page.dart';
 import 'package:club_app/main.dart';
 import 'package:club_app/explore/explore.dart';
 
+List<Widget> events = [Text("kajfslkjlds")];
+
+class CalendarPage extends StatefulWidget {
+  CalendarPageState createState() => CalendarPageState();
+}
 
 
-class CalendarPage extends StatelessWidget {
-  List<Widget> orderedDates = [];
+class CalendarPageState extends State<CalendarPage>{
+  List<String> orderedDates = [];
 
 
 
   @override
   Widget build(BuildContext context) {
-
 
     return Scaffold(
         appBar: AppBar(
@@ -24,30 +28,12 @@ class CalendarPage extends StatelessWidget {
           leading: Text(""),
         ),
         body: buildStream());
-//    return ListView(children: [
-//      Padding(
-//        padding: const EdgeInsets.all(8.0),
-//        child: Text("My Calendar", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
-//      ),
-//      CalendarEvent(),
-//      CalendarEvent(),
-//      CalendarEvent(),
-//      CalendarEvent(),
-//      CalendarEvent(),
-//      CalendarEvent(),
-//      CalendarEvent(),
-//      CalendarEvent(),
-//    ]);
+
   }
 
-  Column buildColumn()  {
-    return Column(
-      children: orderedDates,
-    );
-  }
 
   StreamBuilder buildStream() {
-
+    print("a");
     Stream<DocumentSnapshot> courseDocStream =
         Firestore.instance.collection('users').document(uid).snapshots();
     return StreamBuilder<DocumentSnapshot>(
@@ -60,7 +46,11 @@ class CalendarPage extends StatelessWidget {
             // get sections from the document
             var sections = courseDocument['myEvents'];
             // build list using names from sections
+            print(sections.length.toString());
+            print(events.length);
             if (sections.length == 0) {
+              print("d");
+
               return Center(
                 child: Column(
                   children: <Widget>[
@@ -70,6 +60,13 @@ class CalendarPage extends StatelessWidget {
                 ),
               );
             }
+            else if (events.length - 1 == sections.length) {
+              print("events");
+              return Column(
+                children: events,
+              );
+            }
+            print('list');
             return ListView.builder(
               itemCount: sections != null ? sections.length : 0,
               itemBuilder: (_, int index) {
@@ -78,13 +75,15 @@ class CalendarPage extends StatelessWidget {
               },
             );
           } else {
+            print("c");
+
             return Container();
           }
         });
   }
 
   StreamBuilder buildListTile(String eventID) {
-
+    print("b");
     return StreamBuilder(
         stream: Firestore.instance
             .collection("events")
@@ -92,6 +91,8 @@ class CalendarPage extends StatelessWidget {
             .snapshots(),
         builder: (context, snapshot) {
           DocumentSnapshot ds = snapshot.data;
+          print("f");
+
           if (!snapshot.hasData) {
             return Text("");
           } else {
@@ -109,51 +110,70 @@ class CalendarPage extends StatelessWidget {
 //              for (int i = 0; i < orderedDates.length; i++) {
 //                if (!(ds['time'].compareTo(orderedDates[i]) > 0)) {
 //                  orderedDates.insert(i, ds['time']);
+//                  events.insert(i, eventCardCal(ds, context, organizingIndividuals, participatingIndividuals));
 //                  break;
 //                }
 //                if ((i == orderedDates.length-1)) {
 //                  orderedDates.add(ds['time']);
+//                  events.add(eventCardCal(ds, context, organizingIndividuals, participatingIndividuals));
 //                  break;
 //                }
 //              }
 //            }
+//            print(events.toString());
+
 //            print(orderedDates.toString());
+            if (this.mounted) {
+              print("mounted");
+              setState(() {
+                events.add(eventCardCal(ds, context, organizingIndividuals, participatingIndividuals));
 
-            return GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => EventInner(
-                          imageURL: ds['imageURL'],
-                          docID: ds.documentID,
-                          name: ds["eventName"],
-                          date: ds["time"],
-                          location: ds['location'],
-                          description: ds['description'],
-                          organizingGroup: ds['organizingGroup'],
-                          organizingIndividuals: organizingIndividuals,
-                          participatingIndividuals: participatingIndividuals)));
-                },
-                child:
-Padding(
-                padding: EdgeInsets.only(
-          left: 10
-          ),
-                    child:
+              });
+            }
+            else {
+              print("not mounted");
+            }
 
-                    Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+            print(events.toString());
 
-                          Text(convertDate(ds['time']), style: TextStyle(fontSize: 18, color: brownOrange)),
-                          SizedBox(height: 5),
-                          Text(ds['eventName'], style: TextStyle(fontSize: 25)),
-                          Text(ds['location']),
-                          Divider(color: Colors.grey, )
-                        ])
-)
-            );
+            return eventCardCal(ds, context, organizingIndividuals, participatingIndividuals);
           }
         });
+  }
+  Widget eventCardCal(ds, context, organizingIndividuals, participatingIndividuals) {
+    return GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (BuildContext context) => EventInner(
+                  imageURL: ds['imageURL'],
+                  docID: ds.documentID,
+                  name: ds["eventName"],
+                  date: ds["time"],
+                  location: ds['location'],
+                  description: ds['description'],
+                  organizingGroup: ds['organizingGroup'],
+                  organizingIndividuals: organizingIndividuals,
+                  participatingIndividuals: participatingIndividuals)));
+        },
+        child:
+        Padding(
+            padding: EdgeInsets.only(
+                left: 10
+            ),
+            child:
+
+            Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+
+                  Text(convertDate(ds['time']), style: TextStyle(fontSize: 18, color: brownOrange)),
+                  SizedBox(height: 5),
+                  Text(ds['eventName'], style: TextStyle(fontSize: 25)),
+                  Text(ds['location']),
+                  Divider(color: Colors.grey)
+                ])
+        )
+    );
   }
 }
 
