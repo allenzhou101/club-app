@@ -137,6 +137,9 @@ class EventInnerState extends State<EventInner> {
                             .updateData({
                           'myEvents': FieldValue.arrayUnion([widget.docID])
                         });
+
+
+
                         Firestore.instance.collection("events").document(
                             widget.docID).updateData({
                           'participatingIndividuals': FieldValue.arrayUnion([uid])

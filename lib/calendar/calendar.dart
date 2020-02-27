@@ -13,13 +13,11 @@ class CalendarPage extends StatefulWidget {
 
 
 class CalendarPageState extends State<CalendarPage>{
+
   List<String> orderedDates = [];
-
-
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -33,12 +31,17 @@ class CalendarPageState extends State<CalendarPage>{
 
 
   StreamBuilder buildStream() {
+//    setState(() {
+//      events = [Text("Nothing")];
+//    });
     print("a");
     Stream<DocumentSnapshot> courseDocStream =
         Firestore.instance.collection('users').document(uid).snapshots();
-    return StreamBuilder<DocumentSnapshot>(
+    print('a1');
+     return StreamBuilder<DocumentSnapshot>(
         stream: courseDocStream,
         builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          print("x");
           //if (snapshot.connectionState == ConnectionState.active) {
           if (snapshot.hasData) {
             // get course document
@@ -48,6 +51,8 @@ class CalendarPageState extends State<CalendarPage>{
             // build list using names from sections
             print(sections.length.toString());
             print(events.length);
+            print("d1");
+
             if (sections.length == 0) {
               print("d");
 
@@ -60,13 +65,14 @@ class CalendarPageState extends State<CalendarPage>{
                 ),
               );
             }
-            else if (events.length - 1 == sections.length) {
-              print("events");
-              return Column(
-                children: events,
-              );
-            }
-            print('list');
+//            else if (events.length - 1 == sections.length) {
+//              print("events");
+//              return Column(
+//                children: events,
+//              );
+//            }
+//            print('list');
+            print("b");
             return ListView.builder(
               itemCount: sections != null ? sections.length : 0,
               itemBuilder: (_, int index) {
@@ -80,6 +86,7 @@ class CalendarPageState extends State<CalendarPage>{
             return Container();
           }
         });
+     print("a2");
   }
 
   StreamBuilder buildListTile(String eventID) {
@@ -110,12 +117,18 @@ class CalendarPageState extends State<CalendarPage>{
 //              for (int i = 0; i < orderedDates.length; i++) {
 //                if (!(ds['time'].compareTo(orderedDates[i]) > 0)) {
 //                  orderedDates.insert(i, ds['time']);
-//                  events.insert(i, eventCardCal(ds, context, organizingIndividuals, participatingIndividuals));
+//                  if (this.mounted)
+//                    setState(() {
+//                      events.insert(i, eventCardCal(ds, context, organizingIndividuals, participatingIndividuals));
+//                    });
 //                  break;
 //                }
 //                if ((i == orderedDates.length-1)) {
 //                  orderedDates.add(ds['time']);
-//                  events.add(eventCardCal(ds, context, organizingIndividuals, participatingIndividuals));
+//                  if (this.mounted)
+//                    setState(() {
+//                      events.add(eventCardCal(ds, context, organizingIndividuals, participatingIndividuals));
+//                    });
 //                  break;
 //                }
 //              }
@@ -123,18 +136,17 @@ class CalendarPageState extends State<CalendarPage>{
 //            print(events.toString());
 
 //            print(orderedDates.toString());
-            if (this.mounted) {
-              print("mounted");
-              setState(() {
-                events.add(eventCardCal(ds, context, organizingIndividuals, participatingIndividuals));
+//            if (this.mounted) {
+//              print("mounted");
+//              setState(() {
+//                events.add(eventCardCal(ds, context, organizingIndividuals, participatingIndividuals));
+//
+//              });
+//            }
+//            else {
+//              print("not mounted");
+//            }
 
-              });
-            }
-            else {
-              print("not mounted");
-            }
-
-            print(events.toString());
 
             return eventCardCal(ds, context, organizingIndividuals, participatingIndividuals);
           }
